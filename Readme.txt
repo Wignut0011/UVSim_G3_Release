@@ -13,15 +13,20 @@ l     | \   / l     |     \    | j  l |   |   |l     ||     ||  |  |  |  |  l   
 ==================================================================================================
 --------------------------------------------------------------------------------------------------
 
-	|==================|
-	|     TABLE        |
-	|==================|
-	|1: Functionality  |
-	|                  |
-	|2: Requirements   |
-	|                  |
-	|3: Test Cases     |
-	|__________________|
+	|===================|
+	|      TABLE        |
+	|===================|
+	|1: Functionality   |
+	|   -Specs          |
+	|   -Operation      |
+	|   -Edit Mode      |
+	|   -Execution Mode |
+	|   -Operations     |
+	|                   |
+	|2: Requirements    |
+	|                   |
+	|3: Test Cases      |
+	|___________________|
 
 --------------------------------------------------------------------------------------------------
 ==================================================================================================
@@ -30,68 +35,104 @@ l     | \   / l     |     \    | j  l |   |   |l     ||     ||  |  |  |  |  l   
  1 |
 ___|
 
-	Operation
-	---------
-	This simulator is meant to emulate coding in machine language. It will be a Command Line
-	based program where the user will input their code as signed 4 digit decimal numbers one
-	line at a time then execute the code they had input. Each line will represent memory
-	locations. Memory will be limited to 100 lines, thus, lines will be numbered 00-99. When
-	the user is finished coding, they will input -99999.
-
 	Specs
-	------
-	It will contain 1 register nammed "Accumulator" and contain 15 operations. Operations
-	not needed for this milestone will be marked as "missing" in this readme. The simulator
-	will emulate an ALU. The only operations the ALU will utilize are XOR and AND. An n bit
-	full will also be simulated.
+	=====
 	
 	
-	====================================
+	UVSim contains 1 register nammed "Accumulator", 15 operations, and 100 lines of memory.
+	UVSim runs in 2 modes. Editing Mode and Execution Mode.
+	
+
+	Operation
+	=========
+	
+	
+	UVSim is meant to emulate coding in machine language. It is be a Command Line based 
+	program. UVSim runs in 2 modes; Editing Mode and Execution Mode. When the simulator
+	launches, you will be in Editing Mode, here you will input your instructions (code)
+	as signed 4 digit decimal numbers one line at a time. Please see section Editing
+	Mode for further detail. When you are finished inputing your isntructions, input
+	-99999. This ends Editing Mode and starts Execution Mode. In Execution Mode, the 
+	simulator will run the instructions you had previously input in Editing Mode then 
+	display a memory dump after it's finished. 
+	
+	
+	
+	EDITING MODE
+	=============
+	
+	
 	  ________________
 	  |UVUSim.exe    |
 	  |--------------|
+	  | 00 ? +1009   |
           | ...          |
-          | 04 ? +1009   |
           | 05 ? +3011_< |
             --   ----- 
             ^    ^^ ^
             1    23 4
 		
-	1: Base 10 Address (5 = X0005)
+	1: Address
 	2: Interger sign
 	3: Operator
 	4: Operand
 	
-	====================================
+	In Editing Mode, you will input your instrucions line by line starting at line 00 as shown 
+	above. Each instruction contains an interger sign, operator, and operand. the sign tells
+	the simulator if the data is positive or negative. the operator tells the simulator what
+	operation to do (a list of each operator and a discription is listed below). The operand
+	is dependent on the operator. Since the memory is limited to 100 lines, you will only be
+	able to input instructions until line 99 or until you exit Editing Mode. When you want
+	the program to stop at a particular line, be sure to put a HALT instruction. To exit
+	Editing	Mode you can either fill all 99 lines or input -9999. Doing this will put UVSim
+	into Execution Mode.
+		
+	Hint: You may want to reserve a block of lines for data, if so, you can use it as pure
+	data, or you may want to leave it empty incase you want to save data during execution.
+	
+	CAUTION: Be aware of the arithmatic you are asking the simulator to perform. Since each
+	word is limited to 4 digits, you may experience an overflow if the arithmatic results
+	in a higher digit number. IE: Once it reaches the limit of +9999, it will wrap back to
+	the other limit of -9999 and continue, resulting in a false answer.
+
+
+
+	EXECUTION MODE
+	==============
+	
+	
+	In Execution Mode, the simulator will start to execute the instructions you had put into
+	it's memory. Depending on your instructions, you may be prompted to input a number.
+	
+	
+	LIST OF OPERATIONS
+	==================
 	
 	
 	I/O operations:
 		READ = 10               Read a word from the keyboard into a specific location in memory.
-		WRITE = 11              Missing
+		WRITE = 11              Write a word from a specific location in memory to screen.
 		
 	Load/store operations:
 		LOAD = 20               Load a word from a specific location in memory into the accumulator.
-		STORE = 21              Missing
+		STORE = 21              Store a word from the accumulator into a specific location in memory. 
 		
 	Arithmetic operations:
 		Add = 30                Add a word from a specific location in memory to the word in the
-                                    accumulator (leave the result in the accumulator)
-		SUBTRACT = 31           Missing
-		DIVIDE = 32             Missing
-		MULTIPLY = 33           Missing
+	                                accumulator (leave the result in the accumulator)
+		SUBTRACT = 31           Subtract a word from a specific location in memory from the word in the
+		                        accumulator (leave the result in the accumulator)
+		DIVIDE = 32             Divide the word in the accumulator by a word from a specific location in
+		                        memory (leave the result in the accumulator).
+		MULTIPLY = 33           multiply a word from a specific location in memory to the word in the
+		                        accumulator (leave the result in the accumulator).
 		
 	Control operations:
 		BRANCH = 40             Branch to a specific location in memory
-		BRANCHNEG = 41          Missing
-		BRANCHZERO = 42         Missing
-		HALT = 43               Missing
-		
-	Debugging operations:
-		MEMDUMP	                Print the memory image on the screen.
-		BREAK                   Missing
-		CONTINUE                Missing
-		
-	
+		BRANCHNEG = 41          Branch to a specific location in memory if the accumulator is negative. 
+		BRANCHZERO = 42         Branch to a specific location in memory if the accumulator is zero.
+		HALT = 43               Pause the program
+			
 	
 --------------------------------------------------------------------------------------------------
 ==================================================================================================
@@ -106,9 +147,8 @@ ___|
 		40 Pts
 		------
 			1: A working command line prototype
-			2: 5 operations (READ, LOAD, ADD, BRANCH, MEMDUMP)
+			2: 15 operations
 			3: A comment from each team member regarding their part of the implementation
-			*Some implementation such as the ALU and debugging may be skipped
 			
 		20 Pts
 		------
@@ -128,7 +168,6 @@ ___|
 		10 Pts
 		------
 			3 passing test cases (2 will be provided)
-			*While testing, a stub may be introduced
 			
 		5  Pts
 		------
