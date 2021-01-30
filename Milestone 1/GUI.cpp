@@ -6,8 +6,12 @@ void GUI(){
     string welcome = "blah";
     cout << welcome;
 //create loop that takes input and performs function based on input
-    bool quit = false;
-    do {
+<<<<<<< HEAD
+//test this is another test. wow. 
+=======
+//test this is only a test
+>>>>>>> b4a775fc9f31c44cd13e528c014a164932589b51
+    for(int i = 0; i < 100; i++){
         string uInput;
         cin >> uInput;
         //test input for proper syntax, return error if not 
@@ -51,7 +55,7 @@ void GUI(){
             case 43: 
                 Halt();
                 break;
-        } while(!quit);
+        }
     }
 
 }
