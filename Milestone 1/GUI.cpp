@@ -5,14 +5,16 @@ void GUI(){
 //post welcome message and instructions
     string welcome = "blah";
     cout << welcome;
-//create loop that takes input and performs function based on input
-//here is another test. this is thest 3
+
     for(int i = 0; i < 100; i++){
         string uInput;
         cin >> uInput;
-        //test input for proper syntax, return error if not 
-        //pull out first two characters of each input to gather instruction, store remaining numbers in another var.
         int test = parseInt(uInput[0] + uInput[1], 10);
+    }
+
+//create loop that takes input and performs function based on input
+    for(int i = 0; i < 100; i++){
+        //pull out first two characters of each input to gather instruction, store remaining numbers in another var.
         //switch/case for each instruction
         switch(test){
             case 10:
