@@ -7,7 +7,7 @@ void GUI(){
     cout << welcome;
 //create loop that takes input and performs function based on input
     bool quit = false;
-    do {
+    for(int i = 0; i < 100; i++){
         string uInput;
         cin >> uInput;
         //test input for proper syntax, return error if not 
@@ -51,7 +51,7 @@ void GUI(){
             case 43: 
                 Halt();
                 break;
-        } while(!quit);
+        }
     }
 
 }
