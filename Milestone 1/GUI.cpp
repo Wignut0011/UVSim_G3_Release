@@ -26,11 +26,12 @@ void GUI(){
         //gather user input
         string uInput;
         cin >> uInput;
-        //stop gathering if user types -99999
-        if (uInput == "-99999") break;
         
         //place user input into map
         inputMap[i] = uInput;
+        
+        //stop gathering if user types -99999
+        if (uInput == "-99999") break;
     }
 
     /* test output
