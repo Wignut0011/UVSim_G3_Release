@@ -6,7 +6,7 @@ void GUI(){
     string welcome = "blah";
     cout << welcome;
 //create loop that takes input and performs function based on input
-    bool quit = false;
+//test test test
     for(int i = 0; i < 100; i++){
         string uInput;
         cin >> uInput;
