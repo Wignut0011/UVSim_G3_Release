@@ -4,6 +4,31 @@
 #include "CPU.cpp"
 using namespace std;
 
+void MemDump(map<size_t,string> inputMap){
+    cout << "       00     01     02     03     04     05     06     07     08     09" << endl;
+    string line;
+    for (int i = 0; i < 100; i++){
+        if (i % 10 == 0){
+            if (i == 0){
+                line = "00";
+            }
+            else {
+                line = to_string(i);
+            }
+        }
+        string memory = inputMap[i];
+        int addZero = 5-memory.length();
+        for(int j = 0; j < addZero; j++){
+            memory = "0" + memory;
+        }
+        line = line + "  " + memory;
+        if (i % 10 == 9){
+            cout << line << endl;
+        }
+    }
+
+}
+
 int main () {
 //post welcome message and instructions
     cout << "**** Welcome to UV SIM! ****\n" <<
@@ -32,5 +57,10 @@ int main () {
         //stop gathering if user types -99999
         if (uInput == "-99999") break;
     }
+
+    //call CPU and send inputMap to it.
+
+    MemDump(inputMap);
+
     return 0;
 }

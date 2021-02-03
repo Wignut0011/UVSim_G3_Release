@@ -1,6 +1,7 @@
 #include <map> //Memory
 #include <algorithm> //If needed
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -13,8 +14,8 @@ public:
     map<int, string> memory;
 
 
-    CPU(map<int,string> inputMap) {
-        memory = inputMap;
+    CPU(map<size_t,string> inputMap) {
+        map<size_t,string> memory = inputMap;
 
         for (int i = 0; i < 100; i++) {
             size_t opcode;
