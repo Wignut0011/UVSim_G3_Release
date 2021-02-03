@@ -4,51 +4,98 @@
 
 using namespace std;
 
-class CPU{
+class CPU {
 public:
     //----------------
     // EXECUTION MODE
     //----------------
+    int accumulator;
+    map<int, string> memory;
 
-private:
-    //----------------
-    //   OPERATIONS
-    //----------------
 
-    // IO
+    CPU(map<int,string> inputMap) {
+        memory = inputMap;
 
-    // Read/Write
+        for (int i = 0; i < 100; i++) {
+            size_t opcode;
+            int operand;
 
-    // Arithmetic
+            string line = inputMap[i];
+            //stop gathering if user types -99999
+            if (line == "-99999") break;
 
-    // Branches
+            string instruction = to_string(line[1] + line[2]);
+            int test = stoi(instruction);
+            //switch/case for each instruction
+            switch (test) {
+                case 10:
+                    //Read();
+                    cout << "read";
+                    break;
+                case 11:
+                    //Write();
+                    cout << "Write";
+                    break;
+                case 20:
+                    //Load();
+                    cout << "Load";
+                    break;
+                case 21:
+                    //Store();
+                    cout << "Store";
+                    break;
+                case 30:
+                    //Add();
+                    cout << "Add";
+                    break;
+                case 31:
+                    //Subtract();
+                    cout << "Subtract";
+                    break;
+                case 32:
+                    //Divide();
+                    cout << "Divide";
+                    break;
+                case 33:
+                    //Multiply();
+                    cout << "Multiply";
+                    break;
+                    //Branch
 
-    //Branch
-    void Branch(int operand, size_t &PC){
-        //Branch to address in operand
-        PC = abs(operand)-1;
-    }
+                    //BRANCH
+                case 40:
+                    //Branch to address in operand
+                    i = abs(operand) - 1;
+                    break;
 
-    //BranchNeg
-    void BranchNeg(int operand, size_t &PC){
-        if(accumulator < 0) //If accumulator is negative, branch to address
-            PC = abs(operand)-1;
-    }
+                    //BRANCHNEG
+                case 41:
+                    if (accumulator < 0) //If accumulator is negative, branch to address
+                        i = abs(operand) - 1;
+                    break;
 
-    //BranchZero
-    void BranchZero(int operand, size_t &PC){
-        switch (accumulator) {
-            case 0: //If accumulator is 0, branch to address
-                PC = abs(operand)-1;
-                break;
+                    //BRANCHZERO
+                case 42:
+                    switch (accumulator) {
+                        case 0: //If accumulator is 0, branch to address
+                            i = abs(operand) - 1;
+                            break;
 
-            default: //If not 0, then return 0
-                break;
+                        default:
+                            break;//If not 0, then return 0
+                    }
+
+                    //HALT
+                case 43:
+                    i = 99;
+                    break;
+
+                    //INVALID OPCODE
+                default:
+                    cout << "ERROR: Invalid operation at line" << i << ".\n Ending program..." << endl;
+                    i == 99;
+                    break;
+            }
         }
-    }
-
-    //Halt
-    void Halt(size_t &PC) {
-        PC = 99; //Skip to end of memory to end program
     }
 };
