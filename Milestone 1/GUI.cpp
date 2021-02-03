@@ -5,7 +5,7 @@
 using namespace std;
 
 void MemDump(map<size_t,string> inputMap){
-    cout << "   10   00     01     02     03     04     05     06     07     08     09" << endl;
+    cout << "       00     01     02     03     04     05     06     07     08     09" << endl;
     string line;
     for (int i = 0; i < 100; i++){
         if (i % 10 == 0){
