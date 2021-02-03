@@ -5,7 +5,7 @@
 using namespace std;
 
 void MemDump(map<size_t,string> inputMap){
-    cout << "       00     01     02     03     04     05     06     07     08     09" << endl;
+    cout << "   10   00     01     02     03     04     05     06     07     08     09" << endl;
     string line;
     for (int i = 0; i < 100; i++){
         if (i % 10 == 0){
@@ -17,16 +17,15 @@ void MemDump(map<size_t,string> inputMap){
             }
         }
         string memory = inputMap[i];
-        int addZero = 5-memory.length();
+        int addZero =  5 - int(memory.length());
         for(int j = 0; j < addZero; j++){
-            memory = "0" + memory;
+            memory.insert(0,"0");
         }
-        line = line + "  " + memory;
+        line += "  " + memory;
         if (i % 10 == 9){
             cout << line << endl;
         }
     }
-
 }
 
 int main () {
@@ -43,7 +42,7 @@ int main () {
     for (int i = 0; i < 100; i++) {
         string line;
         if (i < 10) line = "0" + to_string(i);
-        else line = i;
+        else line = to_string(i);
         cout << line + " ? ";
         //gather user input
         string uInput;
@@ -61,6 +60,8 @@ int main () {
     //call CPU and send inputMap to it.
 
     MemDump(inputMap);
-
+    int end;
+    cin >> end;
     return 0;
 }
+
