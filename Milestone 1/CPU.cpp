@@ -1,6 +1,7 @@
 #include <map> //Memory
 #include <algorithm> //If needed
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ public:
     //----------------
     // EXECUTION MODE
     //----------------
+
 
     //Constructor
     CPU(map<int,string> inputMap): memory(std::move(inputMap)) {
