@@ -48,7 +48,7 @@ public:
             op1.push_back(line[4]);
             int operand = stoi(op1);
             //cout << "Operand: " << operand << endl;
-            
+
 
             inputMap[10] = "10";
 
