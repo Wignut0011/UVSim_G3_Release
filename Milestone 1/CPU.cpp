@@ -9,8 +9,9 @@
 
 using namespace std;
 
-void CPU(map<size_t,string> inputMap){
+void CPU(map<size_t,string> inputMap){ //size_t = key   string = data
     int accumulator;
+    string userNum;
 
     //create loop that takes input and performs function based on input
     for(int i = 0; i < 100; i++){
@@ -31,32 +32,34 @@ void CPU(map<size_t,string> inputMap){
         //   Possibly a code block to find the location of each
         //      operand as we are going through the code.
         //=========================================================
-        
+
+        //key of map is integer
         //switch/case for each instruction
         switch(test){
             case 10:
-                //Read();  Read a word from the keyboard into a specific location in memory
-                //From TestCase 1
-                auto targetMem = inputMap.find(operand); //finds the memory location in the map.
-                inputMap.insert(operand, targetMem); //inserts the data into the memory location
+                //Read();
+                //1007 = grab first input from the user and put it into desired memory location
+                    cout << "Enter an integer: ";
+                    cin >> userNum;
+                    inputMap[operand] = userNum;
                 cout << "read";
                 break;
             case 11:
-                //Write();   Write a word from a specific location in memory to screen
+                //Write();
                 //write command; take memory location 09 and give it to the screen to print.
-                cout << `contents of ${inputMap[location]} is ${inputMap[data]}`;
+                cout << "Contents of " << operand << "is " << inputMap[operand];
                 cout << "Write";
                 break;
             case 20:
                 //Load();    Load a word from a specific location in memory into the accumulator
                 //load command; integer from location 07 is loaded into accumulator
-                accumulator = inputMap[location].data;
+                accumulator = stoi(inputMap[operand]);
                 cout << "Load";
                 break;
             case 21:
                 //Store();   Store a word from the accumulator into a specific location in memory
                 //store command; take the added number and store it in the memory location 09
-                inputMap[location] accumulator;
+                inputMap[operand] = to_string(accumulator);
                 cout << "Store";
                 break;
             case 30:
