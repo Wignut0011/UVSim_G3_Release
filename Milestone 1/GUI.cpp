@@ -28,6 +28,7 @@ void MemDump(map<size_t,string> inputMap){
     }
 }
 
+
 int main () {
 //post welcome message and instructions
     cout << "**** Welcome to UV SIM! ****\n" <<
@@ -53,15 +54,11 @@ int main () {
         //place user input into map
         inputMap[i] = uInput;
 
-        //stop gathering if user types -99999
-        if (uInput == "-99999") break;
     }
 
     //call CPU and send inputMap to it.
-
     MemDump(inputMap);
     int end;
     cin >> end;
     return 0;
 }
-

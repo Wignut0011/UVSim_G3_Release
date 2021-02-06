@@ -1,12 +1,8 @@
-//
-// Created by santi on 2/5/2021.
-//
-//
-// Created by santi on 2/5/2021.
-//
-#include <map>
-#include <iostream>
+<<<<<<< HEAD
+#include <map> //Memory
 #include <string>
+#include <algorithm> //If needed
+#include <iostream>
 
 using namespace std;
 
@@ -20,8 +16,9 @@ public:
     // EXECUTION MODE
     //----------------
 
-    //create loop that takes input and performs function based on input
-    for(int i = 0; i < 100; i++){
+    explicit CPU(map<int,string> inputMap): memory(std::move(inputMap)) {
+		
+        accumulator = 0;
 
 
     //Constructor
@@ -35,6 +32,17 @@ public:
             string line = memory.at(i);
             //stop gathering if user types -99999
             if (line == "-99999") break;
+			
+			// grabs Integer sign
+            bool sign;
+            if (line[0] == '+') sign = true;
+            else if (line[0] == '-') sign = false;
+            else
+            {
+                cout << "Invalid sign at line: " << i << endl;
+                break;
+            }
+            //cout << "Sign: " << sign << endl;
 
             //==========================================================
             //   Gets the instruction code to be used in the switch
@@ -55,43 +63,49 @@ public:
                     cout << "Enter an integer: ";
                     cin >> userNum;
                     inputMap[operand] = userNum;
-                    cout << "read";
                     break;
+					
                 case 11:
                     //Write();
-                    //write command; take memory location 09 and give it to the screen to print.
+					//write command; take memory location 09 and give it to the screen to print.
                     cout << "Contents of " << operand << "is " << inputMap[operand];
-                    cout << "Write";
                     break;
+
                 case 20:
                     //Load();    Load a word from a specific location in memory into the accumulator
                     //load command; integer from location 07 is loaded into accumulator
                     accumulator = stoi(inputMap[operand]);
-                    cout << "Load";
                     break;
+					
                 case 21:
                     //Store();   Store a word from the accumulator into a specific location in memory
                     //store command; take the added number and store it in the memory location 09
                     inputMap[operand] = to_string(accumulator);
-                    cout << "Store";
                     break;
+					
                 case 30:
                     //Add();
-                    cout << "Add";
+                    if (sign) accumulator += stoi(inputMap[operand]);
+                    else accumulator -= stoi(inputMap[operand]);
                     break;
+					
                 case 31:
                     //Subtract();
-                    cout << "Subtract";
+                    if (sign) accumulator -= stoi(inputMap[operand]);
+                    else accumulator += stoi(inputMap[operand]);
                     break;
+					
                 case 32:
                     //Divide();
-                    cout << "Divide";
+                    accumulator /= stoi(inputMap[operand]);
+                    if (!sign) accumulator *= -1;
                     break;
+					
                 case 33:
                     //Multiply();
-                    cout << "Multiply";
+                    accumulator *= stoi(inputMap[operand]);
+                    if (!sign) accumulator *= -1;
                     break;
-                    //Branch
 
                 //BRANCH
                 case 40:
@@ -104,7 +118,6 @@ public:
                     if (accumulator < 0) //If accumulator is negative, branch to address
                         i = abs(operand) - 1;
                     break;
-
                 //BRANCHZERO
                 case 42:
                     switch (accumulator) {
@@ -113,6 +126,7 @@ public:
                             break;
 
                         default:
+                            i = 99;
                             break;//If not 0, then return 0
                     }
 
@@ -128,8 +142,7 @@ public:
                     i = 99;
                     break;
             }
+            cout << "Accumulator: " << accumulator << endl;
         }
     }
-
-}
-
+};
