@@ -4,6 +4,9 @@
 
 using namespace std;
 
+#ifndef MILESTONE_1_CPU_H
+#define MILESTONE_1_CPU_H
+
 class CPU {
     int accumulator; //The singular register
     map<int, string> memory; //Our memory <line#, instruction>
@@ -18,8 +21,8 @@ public:
 
         //For loop to imitate a cpu clock
         for (int i = 0; i < 100; i++) {
-            size_t opcode;
-            int operand;
+            size_t opcode; //Instruction type for switch statement
+            int operand; //The other half of the instruction
 
             string line = memory.at(i);
             //stop gathering if user types -99999
@@ -64,19 +67,19 @@ public:
                     break;
                     //Branch
 
-                //BRANCH
+                    //BRANCH
                 case 40:
                     //Branch to address in operand
                     i = abs(operand) - 1;
                     break;
 
-                //BRANCHNEG
+                    //BRANCHNEG
                 case 41:
                     if (accumulator < 0) //If accumulator is negative, branch to address
                         i = abs(operand) - 1;
                     break;
 
-                //BRANCHZERO
+                    //BRANCHZERO
                 case 42:
                     switch (accumulator) {
                         case 0: //If accumulator is 0, branch to address
@@ -87,18 +90,20 @@ public:
                             break;//If not 0, then return 0
                     }
 
-                //HALT
+                    //HALT
                 case 43:
                     i = 99;
                     break;
 
-                //INVALID OPCODE
+                    //INVALID OPCODE
                 default:
                     cout << "ERROR: Invalid operation '" << opcode << "' at line" << i << ". "<<
-                    "Please review valid instructions in readme.txt\nEnding program..." << endl;
+                         "Please review valid instructions in readme.txt\nEnding program..." << endl;
                     i = 99;
                     break;
             }
         }
     }
 };
+
+#endif //MILESTONE_1_CPU_H
