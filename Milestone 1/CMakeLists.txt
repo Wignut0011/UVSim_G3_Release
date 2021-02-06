@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.17)
+project(Milestone_1)
+
+set(CMAKE_CXX_STANDARD 14)
+
+add_executable(Milestone_1 main.cpp)
