@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/santi/CLionProjects/UVSim_G3/CPU.cpp
+map
+-
+iostream
+-
+string
+-
+
+C:/Users/santi/CLionProjects/UVSim_G3/GUI.cpp
+iostream
+-
+string
+-
+map
+-
+CPU.cpp
+C:/Users/santi/CLionProjects/UVSim_G3/CPU.cpp
+
+C:/Users/santi/CLionProjects/UVSim_G3/main.cpp
+iostream
+-
+

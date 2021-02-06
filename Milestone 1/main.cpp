@@ -1,6 +1,6 @@
-#include "GUI.cpp"
+#include <iostream>
 
 int main() {
-    GUI();
-
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
 }
