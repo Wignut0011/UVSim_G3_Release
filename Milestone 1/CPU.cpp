@@ -112,6 +112,7 @@ public:
                             break;
 
                         default:
+                            i = 99;
                             break;//If not 0, then return 0
                     }
 

@@ -60,7 +60,4 @@ void GUI () {
     //call CPU and send inputMap to it.
 
     MemDump(inputMap);
-    int end;
-    cin >> end;
-    //return 0;
 }
