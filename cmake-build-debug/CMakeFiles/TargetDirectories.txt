@@ -1,3 +1,0 @@
-C:/Users/santi/Desktop/UVSim_G3/cmake-build-debug/CMakeFiles/UVSim_G3.dir
-C:/Users/santi/Desktop/UVSim_G3/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/santi/Desktop/UVSim_G3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
