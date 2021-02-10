@@ -80,9 +80,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="D:/Drive/Homework Stuff/Spring 2021/CSSE/GrpProject/UVSim_G3/Milestone 1/CPU.cpp">
-			<Option target="UVSim_G3"/>
-		</Unit>
 		<Unit filename="D:/Drive/Homework Stuff/Spring 2021/CSSE/GrpProject/UVSim_G3/Milestone 1/GUI.cpp">
 			<Option target="UVSim_G3"/>
 		</Unit>

@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "D:/Drive/Homework Stuff/Spring 2021/CSSE/GrpProject/UVSim_G3/Milestone 1/GUI.cpp" "D:/Drive/Homework Stuff/Spring 2021/CSSE/GrpProject/UVSim_G3/cmake-build-debug/CMakeFiles/UVSim_G3.dir/Milestone_1/GUI.cpp.obj"
+  "C:/Users/Anthony/Desktop/UVSim/Milestone 1/main.cpp" "C:/Users/Anthony/Desktop/UVSim/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/main.cpp.obj"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "MSVC")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

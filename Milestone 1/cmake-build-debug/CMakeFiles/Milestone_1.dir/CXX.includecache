@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Anthony/Desktop/UVSim/Milestone 1/CPU.cpp
+map
+-
+algorithm
+-
+iostream
+-
+
+C:/Users/Anthony/Desktop/UVSim/Milestone 1/GUI.cpp
+iostream
+-
+string
+-
+map
+-
+CPU.cpp
+C:/Users/Anthony/Desktop/UVSim/Milestone 1/CPU.cpp
+
+C:/Users/Anthony/Desktop/UVSim/Milestone 1/main.cpp
+GUI.cpp
+C:/Users/Anthony/Desktop/UVSim/Milestone 1/GUI.cpp
+

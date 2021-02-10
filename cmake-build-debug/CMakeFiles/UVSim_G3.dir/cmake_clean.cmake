@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/UVSim_G3.dir/Milestone_1/CPU.cpp.obj"
   "CMakeFiles/UVSim_G3.dir/Milestone_1/GUI.cpp.obj"
   "UVSim_G3.exe"
   "UVSim_G3.exe.manifest"
