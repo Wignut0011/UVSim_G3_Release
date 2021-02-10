@@ -162,15 +162,14 @@ public:
 
     void overflowCheck()
     {
+        cout << "Accumulator overflow error!" << endl;
         if (accumulator > 9999)
         {
-            cout << "Accumulator is at max capacity" << endl;
-            accumulator = 9999;
+            accumulator -= 19998;
         }
         else if (accumulator < -9999)
         {
-            cout << "Accumulator is at min capacity" << endl;
-            accumulator = -9999;
+            accumulator += -19998;
         }
     }
 
