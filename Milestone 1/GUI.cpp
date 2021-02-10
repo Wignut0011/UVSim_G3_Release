@@ -119,7 +119,7 @@ int main () {
 
     //call CPU and send inputMap to it.
     MemDump(inputMap);
-    int end;
-    cin >> end;
+    //int end;
+    //cin >> end;
     return 0;
 }

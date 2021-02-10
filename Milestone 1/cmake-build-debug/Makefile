@@ -127,32 +127,32 @@ Milestone_1\fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\build
 .PHONY : Milestone_1\fast
 
-main.obj: main.cpp.obj
+GUI.obj: GUI.cpp.obj
 
-.PHONY : main.obj
+.PHONY : GUI.obj
 
 # target to build an object file
-main.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\main.cpp.obj
-.PHONY : main.cpp.obj
+GUI.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\GUI.cpp.obj
+.PHONY : GUI.cpp.obj
 
-main.i: main.cpp.i
+GUI.i: GUI.cpp.i
 
-.PHONY : main.i
+.PHONY : GUI.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\main.cpp.i
-.PHONY : main.cpp.i
+GUI.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\GUI.cpp.i
+.PHONY : GUI.cpp.i
 
-main.s: main.cpp.s
+GUI.s: GUI.cpp.s
 
-.PHONY : main.s
+.PHONY : GUI.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\main.cpp.s
-.PHONY : main.cpp.s
+GUI.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Milestone_1.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\Milestone_1.dir\GUI.cpp.s
+.PHONY : GUI.cpp.s
 
 # Help Target
 help:
@@ -163,9 +163,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Milestone_1
-	@echo ... main.obj
-	@echo ... main.i
-	@echo ... main.s
+	@echo ... GUI.obj
+	@echo ... GUI.i
+	@echo ... GUI.s
 .PHONY : help
 
 

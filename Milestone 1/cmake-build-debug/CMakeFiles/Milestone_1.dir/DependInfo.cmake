@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/Anthony/Desktop/UVSim/Milestone 1/main.cpp" "C:/Users/Anthony/Desktop/UVSim/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/main.cpp.obj"
+  "C:/Users/Anthony/Desktop/UVSim/Milestone 1/GUI.cpp" "C:/Users/Anthony/Desktop/UVSim/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "MSVC")
 

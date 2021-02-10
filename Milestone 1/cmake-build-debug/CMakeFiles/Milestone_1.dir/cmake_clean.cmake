@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Milestone_1.dir/main.cpp.obj"
+  "CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
   "Milestone_1.exe"
   "Milestone_1.exe.manifest"
   "Milestone_1.lib"

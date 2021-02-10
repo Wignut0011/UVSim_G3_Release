@@ -61,33 +61,33 @@ include CMakeFiles\Milestone_1.dir\progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles\Milestone_1.dir\flags.make
 
-CMakeFiles\Milestone_1.dir\main.cpp.obj: CMakeFiles\Milestone_1.dir\flags.make
-CMakeFiles\Milestone_1.dir\main.cpp.obj: ..\main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Anthony\Desktop\UVSim\Milestone 1\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Milestone_1.dir/main.cpp.obj"
+CMakeFiles\Milestone_1.dir\GUI.cpp.obj: CMakeFiles\Milestone_1.dir\flags.make
+CMakeFiles\Milestone_1.dir\GUI.cpp.obj: ..\GUI.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Anthony\Desktop\UVSim\Milestone 1\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
 	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Milestone_1.dir\main.cpp.obj /FdCMakeFiles\Milestone_1.dir\ /FS -c "C:\Users\Anthony\Desktop\UVSim\Milestone 1\main.cpp"
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Milestone_1.dir\GUI.cpp.obj /FdCMakeFiles\Milestone_1.dir\ /FS -c "C:\Users\Anthony\Desktop\UVSim\Milestone 1\GUI.cpp"
 <<
 
-CMakeFiles\Milestone_1.dir\main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Milestone_1.dir/main.cpp.i"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe > CMakeFiles\Milestone_1.dir\main.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Anthony\Desktop\UVSim\Milestone 1\main.cpp"
+CMakeFiles\Milestone_1.dir\GUI.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Milestone_1.dir/GUI.cpp.i"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe > CMakeFiles\Milestone_1.dir\GUI.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Anthony\Desktop\UVSim\Milestone 1\GUI.cpp"
 <<
 
-CMakeFiles\Milestone_1.dir\main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Milestone_1.dir/main.cpp.s"
+CMakeFiles\Milestone_1.dir\GUI.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Milestone_1.dir/GUI.cpp.s"
 	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Milestone_1.dir\main.cpp.s /c "C:\Users\Anthony\Desktop\UVSim\Milestone 1\main.cpp"
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Milestone_1.dir\GUI.cpp.s /c "C:\Users\Anthony\Desktop\UVSim\Milestone 1\GUI.cpp"
 <<
 
 # Object files for target Milestone_1
 Milestone_1_OBJECTS = \
-"CMakeFiles\Milestone_1.dir\main.cpp.obj"
+"CMakeFiles\Milestone_1.dir\GUI.cpp.obj"
 
 # External object files for target Milestone_1
 Milestone_1_EXTERNAL_OBJECTS =
 
-Milestone_1.exe: CMakeFiles\Milestone_1.dir\main.cpp.obj
+Milestone_1.exe: CMakeFiles\Milestone_1.dir\GUI.cpp.obj
 Milestone_1.exe: CMakeFiles\Milestone_1.dir\build.make
 Milestone_1.exe: CMakeFiles\Milestone_1.dir\objects1.rsp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\Anthony\Desktop\UVSim\Milestone 1\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable Milestone_1.exe"
