@@ -100,7 +100,6 @@ public:
                     //Extract number with sign
                     if (sign) accumulator += StrToInt(memory[operand]);
                     else accumulator -= StrToInt(memory[operand]);
-                    overflowCheck();
                     break;
 
                 case 31:
@@ -108,21 +107,18 @@ public:
                     //Extract number with sign
                     if (sign) accumulator -= StrToInt(memory[operand]);
                     else accumulator += StrToInt(memory[operand]);
-                    overflowCheck();
                     break;
 
                 case 32:
                     //Divide();
                     accumulator /= StrToInt(memory[operand]);
                     if (!sign) accumulator *= -1;
-                    overflowCheck();
                     break;
 
                 case 33:
                     //Multiply();
                     accumulator *= StrToInt(memory[operand]);
                     if (!sign) accumulator *= -1;
-                    overflowCheck();
                     break;
 
                     //BRANCH
@@ -156,19 +152,7 @@ public:
                     i = 99;
                     break;
             }
-        }
-    }
-
-    void overflowCheck()
-    {
-        cout << "Accumulator overflow error!" << endl;
-        if (accumulator > 9999)
-        {
-            accumulator -= 19998;
-        }
-        else if (accumulator < -9999)
-        {
-            accumulator += -19998;
+            //cout << "Accumulator: " << accumulator << endl;
         }
     }
 
