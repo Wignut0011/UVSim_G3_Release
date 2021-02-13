@@ -1,3 +1,4 @@
+
 #include <map> //Memory
 #include <string>
 #include <algorithm> //If needed
@@ -10,8 +11,12 @@ using namespace std;
 
 class CPU {
     int accumulator; //The singular register
+    int IC; //For dump
+    string IR; //For dump
+    size_t opcode; //Instruction code
+    int operand; //Instruction operation
     string userNum; //String for user I/O prompts
-    //map<std::size_t , string> memory; //Our memory <line#, instruction>
+    bool halt;
 
 public:
     //----------------
@@ -21,13 +26,15 @@ public:
     explicit CPU(map<size_t ,string> &memory){
 
         accumulator = 0;
+        halt = false;
 
-        //For loop to imitate a cpu clock
-        for (int i = 0; i < 100; i++) {
-            size_t opcode;
-            int operand;
+        //For loop to imitate a cpu clock, ends when end of memory is reached or halt was set
+        for (int i = 0; !halt && i < 100; i++) {
+            opcode = 0;
+            operand = 0;
 
             string line = memory.at(i);
+            IR = line;
             //stop gathering if user types -99999
             if (line == "-99999") break;
 
@@ -100,6 +107,7 @@ public:
                     //Extract number with sign
                     if (sign) accumulator += StrToInt(memory[operand]);
                     else accumulator -= StrToInt(memory[operand]);
+                    overflowCheck();
                     break;
 
                 case 31:
@@ -107,18 +115,21 @@ public:
                     //Extract number with sign
                     if (sign) accumulator -= StrToInt(memory[operand]);
                     else accumulator += StrToInt(memory[operand]);
+                    overflowCheck();
                     break;
 
                 case 32:
                     //Divide();
                     accumulator /= StrToInt(memory[operand]);
                     if (!sign) accumulator *= -1;
+                    overflowCheck();
                     break;
 
                 case 33:
                     //Multiply();
                     accumulator *= StrToInt(memory[operand]);
                     if (!sign) accumulator *= -1;
+                    overflowCheck();
                     break;
 
                     //BRANCH
@@ -142,17 +153,51 @@ public:
 
                     //HALT
                 case 43:
-                    i = 99;
+                    IC = i;
+                    halt = true;
                     break;
 
                     //INVALID OPCODE
                 default:
-                    cout << "ERROR: Invalid operation '" << opcode << "' at line" << i << ". "<<
+                    cout << "ERROR: Invalid operation '" << opcode << "' at line " << i << ".\n"<<
                          "Please review valid instructions in readme.txt\nEnding program..." << endl;
-                    i = 99;
+                    IC = i;
+                    halt = true;
                     break;
             }
-            //cout << "Accumulator: " << accumulator << endl;
+            if (!halt)
+                IC = i;
+        }
+        //Print end of execution message
+        cout << "\n---------HALT Reached, Execution Finsished---------\n" << endl;
+
+        //Format Accumulator to string
+        string accString = to_string(accumulator);
+        if (accumulator > 0) //Insert positive sign
+            accString.insert(0, "+");
+        if (accString.size() < 4) //Insert leading 0s
+            for (std::size_t i = accString.size(); i < 5; ++i)
+                accString.insert(1, "0");
+
+        //Print register dump
+        cout << "REGISTERS" <<
+                "\nAccumulator: " << accString <<
+                "\nInstruction Counter: "; cout.fill('0'); cout.width(2); cout << IC <<
+                "\nInstruction Register: ";; cout.fill('0'); cout.width(2); cout << IR <<
+                "\nOpcode: " << opcode <<
+                "\nOperand: "; cout.fill('0'); cout.width(2); cout << operand << endl << endl;
+    }
+
+    void overflowCheck()
+    {
+        cout << "Accumulator overflow error!" << endl;
+        if (accumulator > 9999)
+        {
+            accumulator -= 19998;
+        }
+        else if (accumulator < -9999)
+        {
+            accumulator += -19998;
         }
     }
 

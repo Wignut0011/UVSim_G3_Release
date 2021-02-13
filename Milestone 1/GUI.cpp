@@ -1,169 +1,127 @@
-#include <map> //Memory
-#include <string>
-#include <algorithm> //If needed
 #include <iostream>
-
+#include <string>
+#include <algorithm>
+#include <map>
+#include "CPU.h"
 using namespace std;
 
-#ifndef MILESTONE_1_CPU_H
-#define MILESTONE_1_CPU_H
+//For testing purposes, will return a test map
+//1 = Arithmetic test (input 2 numbers)
+//2 = Branch test
+//3 = Cond Branch test (result from adding 2 numbers)
+map<size_t, string> TestMaps(int opt){
+    map<size_t, string> testMap;
+    switch (opt) {
+        //arithmetic test
+        case 1:
+            testMap = {{0, "+1007"}, {1, "+1008"}, //03 is arithmetic instruction
+                       {2, "+2007"}, {3, "+3308"},
+                       {4, "+2109"}, {5, "+1109"},
+                       {6, "+4300"}, {7, "+0000"},
+                       {8, "+0000"}, {9, "+0000"}};
+            for (int i = 10; i < 100; ++i)
+                testMap[i] = "+0000";
+            break;
 
-class CPU {
-    int accumulator; //The singular register
-    string userNum; //String for user I/O prompts
-    //map<std::size_t , string> memory; //Our memory <line#, instruction>
+            //branch test
+        case 2:
+            testMap = {{0, "+4004"}, {1, "+4300"}, //Prints 1 if successful
+                       {2, "+0001"}, {3, "+0000"},
+                       {4, "+1102"}, {5, "+4300"},
+                       {6, "+0000"}, {7, "+0000"},
+                       {8, "+0000"}, {9, "+0000"}};
+            for (int i = 10; i < 100; ++i)
+                testMap[i] = "+0000";
+            break;
 
-public:
-    //----------------
-    // EXECUTION MODE
-    //----------------
-
-    explicit CPU(map<size_t ,string> &memory){
-
-        accumulator = 0;
-
-        //For loop to imitate a cpu clock
-        for (int i = 0; i < 100; i++) {
-            size_t opcode;
-            int operand;
-
-            string line = memory.at(i);
-            //stop gathering if user types -99999
-            if (line == "-99999") break;
-
-            // grabs Integer sign
-            bool sign;
-            if (line[0] == '+') sign = true;
-            else if (line[0] == '-') sign = false;
-            else
-            {
-                cout << "Invalid sign at line: " << i << endl;
-                break;
-            }
-            //cout << "Sign: " << sign << endl;
-
-            //==========================================================
-            //   Gets the instruction code to be used in the switch
-            opcode = abs(stoi(line.substr(1,2))); //Extract opcode substring
-            //==========================================================
-            //   Gets the data code to be used in the switch
-            operand = stoi(line.substr(3)); //Extract operand substring
-            // Put sign in operand
-            if (line[0] == '-')
-                operand *= -1;
-
-            //=========================================================
-            //   Possibly a code block to find the location of each
-            //      operand as we are going through the code.
-            //=========================================================
-
-            //switch/case for each instruction
-            switch (opcode) {
-                case 10:
-                    //Read();
-                    //1007 = grab first input from the user and put it into desired memory location
-                    cout << "Enter an integer: ";
-                    cin >> userNum;
-
-                    //Add sign to input if user did not
-                    if (userNum[0] != '+' && userNum[0] != '-')
-                        userNum.insert(0, "+");
-
-                    memory[operand] = userNum;
-                    break;
-
-                case 11:
-                    //Write();
-                    //write command; take memory location 09 and give it to the screen to print.
-                    cout << "Contents of " << operand << " is " << StrToInt(memory[operand]) << endl;
-                    break;
-
-                case 20:
-                    //Load();    Load a word from a specific location in memory into the accumulator
-                    //load command; integer from location 07 is loaded into accumulator
-                    accumulator = StrToInt(memory[operand]);
-                    break;
-
-                case 21:
-                    //Store();   Store a word from the accumulator into a specific location in memory
-                    //store command; take the added number and store it in the memory location 09
-                    memory[operand] = to_string(accumulator);
-
-                    //Add sign to word
-                    if (accumulator >= 0)
-                        memory[operand].insert(0, "+");
-
-                    break;
-
-                case 30:
-                    //Add();
-                    //Extract number with sign
-                    if (sign) accumulator += StrToInt(memory[operand]);
-                    else accumulator -= StrToInt(memory[operand]);
-                    break;
-
-                case 31:
-                    //Subtract();
-                    //Extract number with sign
-                    if (sign) accumulator -= StrToInt(memory[operand]);
-                    else accumulator += StrToInt(memory[operand]);
-                    break;
-
-                case 32:
-                    //Divide();
-                    accumulator /= StrToInt(memory[operand]);
-                    if (!sign) accumulator *= -1;
-                    break;
-
-                case 33:
-                    //Multiply();
-                    accumulator *= StrToInt(memory[operand]);
-                    if (!sign) accumulator *= -1;
-                    break;
-
-                    //BRANCH
-                case 40:
-                    //Branch to address in operand
-                    i = abs(operand) - 1;
-                    break;
-
-                    //BRANCHNEG
-                case 41:
-                    if (accumulator < 0) //If accumulator is negative, branch to address
-                        i = abs(operand) - 1;
-                    break;
-
-                    //BRANCHZERO
-                case 42:
-                    //If accumulator is 0, branch to address
-                    if (!accumulator)
-                        i = abs(operand) - 1;
-                    break;
-
-                    //HALT
-                case 43:
-                    i = 99;
-                    break;
-
-                    //INVALID OPCODE
-                default:
-                    cout << "ERROR: Invalid operation '" << opcode << "' at line" << i << ". "<<
-                         "Please review valid instructions in readme.txt\nEnding program..." << endl;
-                    i = 99;
-                    break;
-            }
-            //cout << "Accumulator: " << accumulator << endl;
-        }
+            //conditional branch test
+        case 3:
+            testMap = {{0, "+1007"}, {1, "+1008"}, //If add is neg, print 1
+                       {2, "+2007"}, {3, "+3008"},  //If add is 0, print 2
+                       {4, "+2109"}, {5, "+4110"},
+                       {6, "+4213"}, {7, "+0000"},
+                       {8, "+0000"}, {9, "+0000"},
+                       {10,"+1112"}, {11,"+4300"},
+                       {12,"+0001"}, {13,"+1115"},
+                       {14,"+4300"}, {15,"+0002"}};
+            for (int i = 16; i < 100; ++i)
+                testMap[i] = "+0000";
+            break;
     }
+    return testMap;
+}
 
-    // Returns signed int from string
-    //*stoi() doesn't like strings that have '+' or '-'
-    int StrToInt(string word){
-        int y = stoi(word.substr(1));
-        if (word[0] == '-') //Grab number sign
-            return(y * -1);
-        return y;
-    };
-};
+//Prints memory dump
+void MemDump(map<size_t, string> inputMap){
+    cout << "MEMORY\n       00     01     02     03     04     05     06     07     08     09" << endl;
+    string line;
+    for (int i = 0; i < 100; i++){
+        if (i % 10 == 0){
+            if (i == 0)
+                line = "00";
 
-#endif //MILESTONE_1_CPU_H
+            else
+                line = to_string(i);
+        }
+        string memory = inputMap[i];
+        int addZero =  5 - memory.length();
+
+        for(int j = 0; j < addZero; j++)
+            memory.insert(1,"0");
+
+        line += "  " + memory;
+        if (i % 10 == 9)
+            cout << line << endl;
+    }
+}
+
+int main () {
+//post welcome message and instructions
+    cout << "**** Welcome to UV SIM! ****\n" <<
+         "**** Please enter your program one instruction ****\n" <<
+         "**** (or data word) at a time into the input   ****\n" <<
+         "**** text field. I will display the location   ****\n" <<
+         "**** and a question mark (?). You then         ****\n" <<
+         "**** type the word for that location. Enter    ****\n" <<
+         "**** -99999 to stop entering your program      ****" << endl;
+    //initialize map
+    map<size_t, string> inputMap;
+    bool done = false;
+
+    for (size_t i = 0; i < 100; i++) {
+        if (!done) {
+            string line;
+            if (i < 10) line = "0" + to_string(i);
+            else line = to_string(i);
+            cout << line + " ? ";
+
+            //gather user input
+            string uInput;
+            cin >> uInput;
+
+            //stop gathering if user types -99999
+            if (uInput == "-99999"){
+                done = true;
+                uInput = "+0000";
+            }
+
+            //place user input into map
+            inputMap[i] = uInput;
+        }
+
+            // Format rest of empty cells
+        else
+            inputMap[i] = "+0000";
+    }
+    //Print message to user that the program is now executing
+    cout << "------------Exiting Edit Mode------------\n---------Entering Execution Mode---------\n" << endl;
+
+    //Run program
+    CPU exe(inputMap);
+
+    //call CPU and send inputMap to it.
+    MemDump(inputMap);
+    //int end;
+    //cin >> end;
+    return 0;
+}
