@@ -47,18 +47,28 @@ public:
                 cout << "Invalid sign at line: " << i << endl;
                 break;
             }
-            //cout << "Sign: " << sign << endl;
 
-            //==========================================================
-            //   Gets the instruction code to be used in the switch
-            opcode = abs(stoi(line.substr(1,2))); //Extract opcode substring
-            //==========================================================
-            //   Gets the data code to be used in the switch
-            operand = stoi(line.substr(3)); //Extract operand substring
-            // Put sign in operand
-            if (line[0] == '-')
-                operand *= -1;
+            //Check if memory location is not properly formatted
+            if (line.size() < 5){
+                size_t diff = 5 - line.size();
+                for (size_t j = 0; j < diff; j++)
+                    line.insert(1, "0");
+            }
 
+            //Memory location contains data
+            else {
+                //cout << "Sign: " << sign << endl;
+
+                //==========================================================
+                //   Gets the instruction code to be used in the switch
+                opcode = abs(stoi(line.substr(1, 2))); //Extract opcode substring
+                //==========================================================
+                //   Gets the data code to be used in the switch
+                operand = stoi(line.substr(3)); //Extract operand substring
+                // Put sign in operand
+                if (line[0] == '-')
+                    operand *= -1;
+            }
             //=========================================================
             //   Possibly a code block to find the location of each
             //      operand as we are going through the code.
@@ -188,17 +198,22 @@ public:
                 "\nOperand: "; cout.fill('0'); cout.width(2); cout << operand << endl << endl;
     }
 
-    void overflowCheck()
-    {
-        cout << "Accumulator overflow error!" << endl;
-        if (accumulator > 9999)
-        {
-            accumulator -= 19998;
+    void overflowCheck(){
+        //Overflow
+        if (accumulator > 9999){
+            cout << "Accumulator overflow error!" << endl;
+            accumulator = -9999 + (accumulator - 9999);
         }
-        else if (accumulator < -9999)
-        {
-            accumulator += -19998;
+
+        //Underflow
+        else if (accumulator < -9999){ //Underflow
+            cout << "Accumulator underflow error!" << endl;
+            accumulator = 9999 - (accumulator + 9999);
         }
+
+        //Multiple overflows check
+        if (accumulator > 9999 || accumulator < -9999)
+            overflowCheck();
     }
 
     // Returns signed int from string
