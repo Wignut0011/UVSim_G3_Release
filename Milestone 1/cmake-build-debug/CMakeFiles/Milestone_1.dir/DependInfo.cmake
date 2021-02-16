@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/Dan5h/School/New folder/Milestone 1/GUI.cpp" "C:/Users/Dan5h/School/New folder/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
+  "C:/Users/santi/Desktop/UVSim_G3/Milestone 1/GUI.cpp" "C:/Users/santi/Desktop/UVSim_G3/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

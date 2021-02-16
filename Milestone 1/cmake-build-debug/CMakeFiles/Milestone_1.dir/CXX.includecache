@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Dan5h/School/New folder/Milestone 1/CPU.h
+C:/Users/santi/Desktop/UVSim_G3/Milestone 1/CPU.h
 map
 -
 string
@@ -16,7 +16,7 @@ algorithm
 iostream
 -
 
-C:/Users/Dan5h/School/New folder/Milestone 1/GUI.cpp
+C:/Users/santi/Desktop/UVSim_G3/Milestone 1/GUI.cpp
 iostream
 -
 string
@@ -26,5 +26,5 @@ algorithm
 map
 -
 CPU.h
-C:/Users/Dan5h/School/New folder/Milestone 1/CPU.h
+C:/Users/santi/Desktop/UVSim_G3/Milestone 1/CPU.h
 
