@@ -15,35 +15,35 @@ map<size_t, string> TestMaps(int opt){
         //arithmetic test
         case 1:
             testMap = {{0, "+1007"}, {1, "+1008"}, //03 is arithmetic instruction
-                      {2, "+2007"}, {3, "+3308"},
-                      {4, "+2109"}, {5, "+1109"},
-                      {6, "+4300"}, {7, "+0000"},
-                      {8, "+0000"}, {9, "+0000"}};
+                       {2, "+2007"}, {3, "+3308"},
+                       {4, "+2109"}, {5, "+1109"},
+                       {6, "+4300"}, {7, "+0000"},
+                       {8, "+0000"}, {9, "+0000"}};
             for (int i = 10; i < 100; ++i)
                 testMap[i] = "+0000";
             break;
 
-    //branch test
+            //branch test
         case 2:
             testMap = {{0, "+4004"}, {1, "+4300"}, //Prints 1 if successful
-                      {2, "+0001"}, {3, "+0000"},
-                      {4, "+1102"}, {5, "+4300"},
-                      {6, "+0000"}, {7, "+0000"},
-                      {8, "+0000"}, {9, "+0000"}};
+                       {2, "+0001"}, {3, "+0000"},
+                       {4, "+1102"}, {5, "+4300"},
+                       {6, "+0000"}, {7, "+0000"},
+                       {8, "+0000"}, {9, "+0000"}};
             for (int i = 10; i < 100; ++i)
                 testMap[i] = "+0000";
             break;
 
-    //conditional branch test
+            //conditional branch test
         case 3:
             testMap = {{0, "+1007"}, {1, "+1008"}, //If add is neg, print 1
-                      {2, "+2007"}, {3, "+3008"},  //If add is 0, print 2
-                      {4, "+2109"}, {5, "+4110"},
-                      {6, "+4213"}, {7, "+0000"},
-                      {8, "+0000"}, {9, "+0000"},
-                      {10,"+1112"}, {11,"+4300"},
-                      {12,"+0001"}, {13,"+1115"},
-                      {14,"+4300"}, {15,"+0002"}};
+                       {2, "+2007"}, {3, "+3008"},  //If add is 0, print 2
+                       {4, "+2109"}, {5, "+4110"},
+                       {6, "+4213"}, {7, "+0000"},
+                       {8, "+0000"}, {9, "+0000"},
+                       {10,"+1112"}, {11,"+4300"},
+                       {12,"+0001"}, {13,"+1115"},
+                       {14,"+4300"}, {15,"+0002"}};
             for (int i = 16; i < 100; ++i)
                 testMap[i] = "+0000";
             break;
@@ -53,7 +53,7 @@ map<size_t, string> TestMaps(int opt){
 
 //Prints memory dump
 void MemDump(map<size_t, string> inputMap){
-    cout << "       00     01     02     03     04     05     06     07     08     09" << endl;
+    cout << "MEMORY\n       00     01     02     03     04     05     06     07     08     09" << endl;
     string line;
     for (int i = 0; i < 100; i++){
         if (i % 10 == 0){
@@ -109,10 +109,12 @@ int main () {
             inputMap[i] = uInput;
         }
 
-        // Format rest of empty cells
+            // Format rest of empty cells
         else
             inputMap[i] = "+0000";
     }
+    //Print message to user that the program is now executing
+    cout << "------------Exiting Edit Mode------------\n---------Entering Execution Mode---------\n" << endl;
 
     //Run program
     CPU exe(inputMap);

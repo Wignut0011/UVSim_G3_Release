@@ -1,3 +1,4 @@
+
 #include <map> //Memory
 #include <string>
 #include <algorithm> //If needed
@@ -10,8 +11,12 @@ using namespace std;
 
 class CPU {
     int accumulator; //The singular register
+    int IC; //For dump
+    string IR; //For dump
+    size_t opcode; //Instruction code
+    int operand; //Instruction operation
     string userNum; //String for user I/O prompts
-    //map<std::size_t , string> memory; //Our memory <line#, instruction>
+    bool halt;
 
 public:
     //----------------
@@ -21,13 +26,15 @@ public:
     explicit CPU(map<size_t ,string> &memory){
 
         accumulator = 0;
+        halt = false;
 
-        //For loop to imitate a cpu clock
-        for (int i = 0; i < 100; i++) {
-            size_t opcode;
-            int operand;
+        //For loop to imitate a cpu clock, ends when end of memory is reached or halt was set
+        for (int i = 0; !halt && i < 100; i++) {
+            opcode = 0;
+            operand = 0;
 
             string line = memory.at(i);
+            IR = line;
             //stop gathering if user types -99999
             if (line == "-99999") break;
 
@@ -40,18 +47,28 @@ public:
                 cout << "Invalid sign at line: " << i << endl;
                 break;
             }
-            //cout << "Sign: " << sign << endl;
 
-            //==========================================================
-            //   Gets the instruction code to be used in the switch
-            opcode = abs(stoi(line.substr(1,2))); //Extract opcode substring
-            //==========================================================
-            //   Gets the data code to be used in the switch
-            operand = stoi(line.substr(3)); //Extract operand substring
-            // Put sign in operand
-            if (line[0] == '-')
-                operand *= -1;
+            //Check if memory location is not properly formatted
+            if (line.size() < 5){
+                size_t diff = 5 - line.size();
+                for (size_t j = 0; j < diff; j++)
+                    line.insert(1, "0");
+            }
 
+            //Memory location contains data
+            else {
+                //cout << "Sign: " << sign << endl;
+
+                //==========================================================
+                //   Gets the instruction code to be used in the switch
+                opcode = abs(stoi(line.substr(1, 2))); //Extract opcode substring
+                //==========================================================
+                //   Gets the data code to be used in the switch
+                operand = stoi(line.substr(3)); //Extract operand substring
+                // Put sign in operand
+                if (line[0] == '-')
+                    operand *= -1;
+            }
             //=========================================================
             //   Possibly a code block to find the location of each
             //      operand as we are going through the code.
@@ -146,18 +163,57 @@ public:
 
                     //HALT
                 case 43:
-                    i = 99;
+                    IC = i;
+                    halt = true;
                     break;
 
                     //INVALID OPCODE
                 default:
-                    cout << "ERROR: Invalid operation '" << opcode << "' at line" << i << ". "<<
+                    cout << "ERROR: Invalid operation '" << opcode << "' at line " << i << ".\n"<<
                          "Please review valid instructions in readme.txt\nEnding program..." << endl;
-                    i = 99;
+                    IC = i;
+                    halt = true;
                     break;
             }
-            //cout << "Accumulator: " << accumulator << endl;
+            if (!halt)
+                IC = i;
         }
+        //Print end of execution message
+        cout << "\n---------HALT Reached, Execution Finsished---------\n" << endl;
+
+        //Format Accumulator to string
+        string accString = to_string(accumulator);
+        if (accumulator > 0) //Insert positive sign
+            accString.insert(0, "+");
+        if (accString.size() < 4) //Insert leading 0s
+            for (std::size_t i = accString.size(); i < 5; ++i)
+                accString.insert(1, "0");
+
+        //Print register dump
+        cout << "REGISTERS" <<
+                "\nAccumulator: " << accString <<
+                "\nInstruction Counter: "; cout.fill('0'); cout.width(2); cout << IC <<
+                "\nInstruction Register: ";; cout.fill('0'); cout.width(2); cout << IR <<
+                "\nOpcode: " << opcode <<
+                "\nOperand: "; cout.fill('0'); cout.width(2); cout << operand << endl << endl;
+    }
+
+    void overflowCheck(){
+        //Overflow
+        if (accumulator > 9999){
+            cout << "Accumulator overflow error!" << endl;
+            accumulator = -9999 + (accumulator - 9999);
+        }
+
+        //Underflow
+        else if (accumulator < -9999){ //Underflow
+            cout << "Accumulator underflow error!" << endl;
+            accumulator = 9999 - (accumulator + 9999);
+        }
+
+        //Multiple overflows check
+        if (accumulator > 9999 || accumulator < -9999)
+            overflowCheck();
     }
 
     void overflowCheck()
