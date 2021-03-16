@@ -8,7 +8,7 @@ int main(){
     CONTROLLER controller(model, view);
     try{controller.StartSimulator();}
     catch (std::runtime_error &err) {
-        std::cout << err.what() << "\nEXITING...\n";
+        std::cout << "\nFATAL ERROR: " << err.what() << "\nEXITING...\n";
     }
     return 0;
 }

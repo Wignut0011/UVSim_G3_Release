@@ -10,7 +10,7 @@ add_executable(Milestone_2
         main.cpp
         CONTROLLER.h
         CPU.h
-        GUI.cpp
+        #GUI.cpp
         MemoryDump.h
         MenuStrings.h
         MODEL.h
