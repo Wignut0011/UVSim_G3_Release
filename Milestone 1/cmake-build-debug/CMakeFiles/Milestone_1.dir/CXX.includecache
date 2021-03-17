@@ -6,25 +6,25 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Anthony/Desktop/UVSim/Milestone 1/CPU.cpp
+C:/Users/Dan5h/School/New folder/Milestone 1/CPU.h
 map
+-
+string
 -
 algorithm
 -
 iostream
 -
 
-C:/Users/Anthony/Desktop/UVSim/Milestone 1/GUI.cpp
+C:/Users/Dan5h/School/New folder/Milestone 1/GUI.cpp
 iostream
 -
 string
 -
+algorithm
+-
 map
 -
-CPU.cpp
-C:/Users/Anthony/Desktop/UVSim/Milestone 1/CPU.cpp
-
-C:/Users/Anthony/Desktop/UVSim/Milestone 1/main.cpp
-GUI.cpp
-C:/Users/Anthony/Desktop/UVSim/Milestone 1/GUI.cpp
+CPU.h
+C:/Users/Dan5h/School/New folder/Milestone 1/CPU.h
 
