@@ -4,13 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-<<<<<<< HEAD
   "C:/Users/Anthony/Desktop/UVSim/Milestone 1/GUI.cpp" "C:/Users/Anthony/Desktop/UVSim/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
-=======
-  "C:/Users/Dan5h/School/New folder/Milestone 1/GUI.cpp" "C:/Users/Dan5h/School/New folder/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir/GUI.cpp.obj"
->>>>>>> 31256c61e1b618f56469bd99490ef43947672d35
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "MSVC")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
