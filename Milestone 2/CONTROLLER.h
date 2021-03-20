@@ -25,7 +25,41 @@ public:
     //Start of program
     void StartSimulator()
     {
+        //Landing Page
         loadMenu();
+
+        /// Switch statement to control which menu page
+        bool done = false;
+        while(!done)
+        {
+            string in;
+            cin >> in;
+            int page = stoi(in);
+            switch (page)
+            {
+                case 1: view.Display(MAIN);
+                    break;
+                case 2: view.Display(README);
+                    break;
+                case 3: view.Display(EDIT);
+                    break;
+                case 4: view.Display(LOAD);
+                    break;
+                case 5: view.Display(SAVE);
+                    break;
+                case 6: view.Display(EXEC);
+                    break;
+                case 7: view.Display(DUMP);
+                    break;
+                case 8: done = true;
+                    break;
+                default: view.DisplayInvalid();
+
+            }
+
+
+
+        }
         if (readUserInput())
         {
             executeMode();
@@ -36,6 +70,8 @@ public:
     bool readUserInput()
     {
         bool done = false;
+        const string STOP = "-99999";
+        const string PAUSE = "+99999";
         for (size_t i = 0; i < 100; i++) {
             if (!done) {
                 string line;
@@ -47,14 +83,26 @@ public:
                 string uInput;
                 cin >> uInput;
 
-                //stop gathering if user types -99999
-                if (uInput == "-99999"){
-                    done = true;
-                    uInput = "+0000";
+                if (uInput.length() == 6)
+                {
+                    //stop gathering if user types -99999
+                    if (uInput == STOP)
+                    {
+                        done = true;
+                        uInput = "+0000";
+                    }
+                    else if (uInput == PAUSE)
+                    {
+                        done = true;
+                        uInput = "+0000";
+                        /// save memory and load main menu
+                        save();
+                        loadMenu();
+                    }
+                    else view.DisplayError();
                 }
 
-
-                /// Check user input for errors
+                // Check user input for errors
                 if ((uInput[0] != '+') || (uInput.length() != 5) || (uInput[0] != '-'))
                 {
                     view.DisplayError();
@@ -72,7 +120,7 @@ public:
                 model.updateMemory("+0000", i);
         }
 
-        return true;
+        return done;
     }
 
     // Starts execution mode
@@ -92,7 +140,7 @@ public:
     // Saves the current program
     bool save()
     {
-        cout << "Save file as: ";
+        cout << "\nSaved file as: ";
         cin >> saveFile;
 
         /// Save copy of current memory into a text file with the name provided
@@ -101,7 +149,7 @@ public:
     // Loads a specified program
     bool load()
     {
-        cout << "Load which file?: ";
+        cout << "\nLoad which file?: ";
         cin >> loadFile;
 
         /// Load specified text file into current memory
@@ -114,9 +162,6 @@ public:
     }
 
 private:
-    const int MainMenu = 0;
-    const int ExecPage = 1;
-    const int EditPage = 2;
     string saveFile;
     string loadFile;
 
