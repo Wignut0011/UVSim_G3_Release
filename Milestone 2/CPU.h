@@ -9,6 +9,13 @@ using namespace std;
 #ifndef MILESTONE_1_CPU_H
 #define MILESTONE_1_CPU_H
 
+class MEMORY {
+    map<size_t, string> inputMap;
+    bool done = false;
+    int mapSize = 100;
+    string uInput;
+    string line;
+};
 class CPU {
     int accumulator; //The singular register
     int IC; //For dump
@@ -69,11 +76,6 @@ public:
                 if (line[0] == '-')
                     operand *= -1;
             }
-            //=========================================================
-            //   Possibly a code block to find the location of each
-            //      operand as we are going through the code.
-            //=========================================================
-
             //switch/case for each instruction
             switch (opcode) {
                 case 10:
@@ -169,6 +171,7 @@ public:
 
                     //INVALID OPCODE
                 default:
+                    //stop execution and then tell view to display error.
                     cout << "ERROR: Invalid operation '" << opcode << "' at line " << i << ".\n"<<
                          "Please review valid instructions in readme.txt\nEnding program..." << endl;
                     IC = i;
