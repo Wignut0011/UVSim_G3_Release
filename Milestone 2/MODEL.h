@@ -10,3 +10,10 @@ public:
     MODEL(VIEW &v): view(v){};
 
 };
+
+class MEMORY{
+public:
+
+private:
+
+};
