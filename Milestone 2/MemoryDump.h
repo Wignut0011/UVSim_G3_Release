@@ -1,8 +1,12 @@
 #include <iostream>
+#include <string>
 #include <map>
+#include "VIEW.h"
+using namespace std;
+
 class MemDump {
-    map <size_t, string> prevMap;
-    map <size_t, string> curMap;
+    static map <size_t, string> prevMap;
+    static map <size_t, string> curMap;
 public:
     static void createDump(map <size_t, string> inputMap) {
         prevMap = curMap;

@@ -7,11 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(.)
 
 add_executable(Milestone_2
+        #GUI.cpp #Legacy
         main.cpp
         CONTROLLER.h
-        CPU.h
-        #GUI.cpp
-        MemoryDump.h
-        MenuStrings.h
         MODEL.h
-        VIEW.h MEMORY.h)
+        MEMORY.h
+        CPU.h
+        VIEW.h
+        MenuStrings.h
+        MemoryDump.h)

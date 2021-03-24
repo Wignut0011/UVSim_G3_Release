@@ -12,7 +12,7 @@
 |                                                                                                                      |
 |                                                                                                                      |
 |               UVSim is a Command Line based Machine Language Simulator developed as an educational                   |
-|               tool for the purpose of learning Machine Language. UVSim contains 1 register nammed                    |
+|               tool for the purpose of learning Machine Language. UVSim contains 1 register named                     |
 |               "Accumulator", 15 instructions, and 100 lines of memory. UVSim runs in 2 modes.                        |
 |               Editing Mode and Execution Mode.                                                                       |
 |                                                                                                                      |

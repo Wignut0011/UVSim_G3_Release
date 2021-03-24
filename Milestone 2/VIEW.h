@@ -9,7 +9,8 @@
 
 //Global constants
 enum resolution :size_t{WIDTH = 120, HEIGHT = 30, PRINT_LINE = 4}; //Resolution line consts
-enum mainPages :size_t{MAIN = 10, README = 20, EDIT = 30, LOAD = 40, SAVE = 50, EXEC = 60, DUMP = 70};
+enum mainPages :size_t{MAIN = 0, README_1 = 1, README_2 = 2, README_3 = 3, README_4 = 4, README_5 = 5,
+        EDIT = 6, EXEC = 7, SAVE = 8, LOAD = 9, DUMP = 10};
 const char LINE_TOKEN[] = "%l", PAGE_TOKEN[] = "%p", ADDR_TOKEN[] = "%a", VAL_TOKEN[] = "%v", DUMP_TOKEN[] = "%d"; // String token consts
 
 class VIEW{
@@ -19,7 +20,7 @@ public:
 
     //Displays a requested page
     void Display(const int& p){
-        currPage = MenuStrings.GetMenu(p); //Get menu page from library facade
+        currPage.str(menus.getMenu(p)); //Get menu page from library facade
 
         //Check if loaded page is right resolution of 120x30 chars
         Validate(stringstream(currPage.str()));
@@ -32,13 +33,25 @@ public:
         cout.flush();
     }
 
+    //Display line on screen
+    void DispLine(string line){
+        currPage.str(regex_replace(currPage.str(), regex(LINE_TOKEN), line)); //Update line
+
+        cout << regex_replace(currPage.str(), regex(LINE_TOKEN), ""); //Update View
+        cout.flush();
+    }
+
     //Continues the memory state of Edit Mode
     void ContinueEdit(MEMORY mem){
-        currPage = MenuStrings.GetMenu(EDIT); //Load up the Edit Page
+        currPage.str(menus.getMenu(EDIT)); //Load up the Edit Page
+        size_t page =  mem.getMap.size()/13; //What page?
+        currPage.str(regex_replace(currPage.str(), regex(PAGE_TOKEN), to_string(page))); //Put page no
 
-        for(size_t i = 0; i < memory.size(); i++){
-
+        for(size_t i = mem.getMap.size() % page; i < mem.getMap().size(); i++){ // Replace line tokens with memory
+            currPage.str(regex_replace(currPage.str(), regex(LINE_TOKEN), mem.getMap.at(i)));
         }
+        cout << regex_replace(currPage.str(), regex(LINE_TOKEN), ""); //Update View
+        cout.flush();
     }
 
     //User's input is invalid, print message on view
@@ -91,7 +104,7 @@ public:
         lineSpace++;
         if (lineSpace >= HEIGHT){
             execPages.push_back(currPage); //Push to page vector
-            currPage = MenuStrings.GetMenu(61).str();
+            currPage.str(menus.getMenu(61));
             currPage.str(regex_replace(currPage.str(), regex(PAGE_TOKEN), to_string(execPages.size())));
             lineSpace = PRINT_LINE+1;
         }
@@ -109,7 +122,7 @@ public:
         lineSpace++;
         if (lineSpace >= HEIGHT){
             execPages.push_back(currPage); //Push to page vector
-            currPage = MenuStrings.GetMenu(61).str();
+            currPage.str(menus.getMenu(61));
             currPage.str(regex_replace(currPage.str(), regex(PAGE_TOKEN), to_string(execPages.size())));
             lineSpace = PRINT_LINE+1;
         }
@@ -123,21 +136,22 @@ public:
 
     //End of execution, display dump and reset exec variables
     /// CHECK WITH TEAM FOR IMPLEMENTATION
-    void DisplayDump(const string& dump){
-        lineSpace = PRINT_LINE; //Reset line counter
-        execPages.clear(); //Clear execution page history.
-
-        stringstream dumpPage(MenuStrings.GetMenu(71));
-        dumpPage.str(regex_replace(dumpPage.str(), regex(DUMP_TOKEN), dump));
-
-        currPage.str(dumpPage.str()); //Is now current page
-        Validate(stringstream(currPage.str())); //Check if page is valid
-
-        cout << regex_replace(currPage.str(), regex(LINE_TOKEN), ""); //Update View
-        cout.flush();
-    }
+//    void DisplayDump(const string& dump){
+//        lineSpace = PRINT_LINE; //Reset line counter
+//        execPages.clear(); //Clear execution page history.
+//
+//        stringstream dumpPage(menus.getMenu(71));
+//        dumpPage.str(regex_replace(dumpPage.str(), regex(DUMP_TOKEN), dump));
+//
+//        currPage.str(dumpPage.str()); //Is now current page
+//        Validate(stringstream(currPage.str())); //Check if page is valid
+//
+//        cout << regex_replace(currPage.str(), regex(LINE_TOKEN), ""); //Update View
+//        cout.flush();
+//    }
 
 private:
+    MenuStrings menus;
     stringstream currPage; //What is currently displayed on the view
     vector<stringstream> execPages; //Page history in Execution mode
     int lineSpace = PRINT_LINE; //Keep track of line space in
