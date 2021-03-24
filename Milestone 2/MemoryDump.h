@@ -1,8 +1,8 @@
 #include <iostream>
 #include <map>
 class MemDump {
-    map <size_t, string> prevMap;
-    map <size_t, string> curMap;
+    static map <size_t, string> prevMap;
+    static map <size_t, string> curMap;
 public:
     static void createDump(map <size_t, string> inputMap) {
         prevMap = curMap;
@@ -26,6 +26,9 @@ public:
             line += "  " + memory;
             if (i % 10 == 9)
                 cout << line << endl;
+        }
+        for (int i = 0; i < 19; i++){
+            cout << endl;
         }
     }
 private:
