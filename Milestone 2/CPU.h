@@ -1,4 +1,4 @@
-
+#include "VIEW.h"
 #include <map> //Memory
 #include <string>
 #include <algorithm> //If needed
@@ -9,14 +9,54 @@ using namespace std;
 #ifndef MILESTONE_1_CPU_H
 #define MILESTONE_1_CPU_H
 
-class MEMORY {
+class MODEL{
+    VIEW view;
+
+public:
+    //constructor
+    MODEL(VIEW &v): view(v){};
+
+    //variables
+    string userNum;
+    int currentPage;
+
+    //functions
+    bool hasMemory();
+    void updateMenu(int); ///used to tell the VIEW to display information if needed.
+    void loadMemory(MEMORY);  ///need to find a way to handle this
+
+    void updateMemory(string opcode, int memLocation){
+
+    }
+
+};
+//SUBCLASS MEMORY
+class MEMORY{
+
+public:
+    //Constructor
+    MEMORY(map){};  ///what is the purpose of this constructor and is it needed also needs fixed
+
+    //variables
     map<size_t, string> inputMap;
     bool done = false;
     int mapSize = 100;
     string uInput;
     string line;
+
+    //functions
+    void remove(int);
+    void add(string, int);
+
+
+
 };
+
+
+//SUBCLASS CPU
+///not much to change at the moment.
 class CPU {
+    //variables
     int accumulator; //The singular register
     int IC; //For dump
     string IR; //For dump
@@ -26,11 +66,9 @@ class CPU {
     bool halt;
 
 public:
-    //----------------
-    // EXECUTION MODE
-    //----------------
 
-    explicit CPU(map<size_t ,string> &memory){
+    //this function needs to reference the map class.
+    void runCPU(map<size_t ,string> &memory){
 
         accumulator = 0;
         halt = false;
@@ -76,7 +114,7 @@ public:
                 if (line[0] == '-')
                     operand *= -1;
             }
-            //switch/case for each instruction
+            //switch case for each instruction
             switch (opcode) {
                 case 10:
                     //Read();
