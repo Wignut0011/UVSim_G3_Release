@@ -1,5 +1,6 @@
 //Includes
 #include "MenuStrings.h"
+#include "MEMORY.h"
 #include <iostream>
 #include <regex>
 #include <sstream>
@@ -18,8 +19,7 @@ public:
 
     //Displays a requested page
     void Display(const int& p){
-        ClearPage(); //Clear stream for new page
-        currPage << MenuStrings.GetMenu(p); //Get menu page from library facade
+        currPage = MenuStrings.GetMenu(p); //Get menu page from library facade
 
         //Check if loaded page is right resolution of 120x30 chars
         Validate(stringstream(currPage.str()));
@@ -30,6 +30,15 @@ public:
 
         cout << regex_replace(currPage.str(), regex(LINE_TOKEN), ""); //Update View
         cout.flush();
+    }
+
+    //Continues the memory state of Edit Mode
+    void ContinueEdit(MEMORY mem){
+        currPage = MenuStrings.GetMenu(EDIT); //Load up the Edit Page
+
+        for(size_t i = 0; i < memory.size(); i++){
+
+        }
     }
 
     //User's input is invalid, print message on view

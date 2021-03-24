@@ -14,4 +14,4 @@ add_executable(Milestone_2
         MemoryDump.h
         MenuStrings.h
         MODEL.h
-        VIEW.h)
+        VIEW.h MEMORY.h)
