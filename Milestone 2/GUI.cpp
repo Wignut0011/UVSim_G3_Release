@@ -85,6 +85,7 @@ int main () {
          "**** type the word for that location. Enter    ****\n" <<
          "**** -99999 to stop entering your program      ****" << endl;
     //initialize map
+    //THIS MAP WORK IS GOING TO HAVE TO BE CONTROLLED BY CPU.H
     map<size_t, string> inputMap;
     bool done = false;
 
@@ -113,7 +114,8 @@ int main () {
         else
             inputMap[i] = "+0000";
     }
-    //Print message to user that the program is now executing
+    //QUESTION
+    //Print message to user that the program is now executing //is this going to stay here or go to a different spot?
     cout << "------------Exiting Edit Mode------------\n---------Entering Execution Mode---------\n" << endl;
 
     //Run program
@@ -122,6 +124,8 @@ int main () {
     //call CPU and send inputMap to it.
     MemDump(inputMap);
 
+    //QUESTION
+    //does this process have to be handled by a different file or just with a slightly different process.
     cout << "\nPress any key to exit..."; cout.flush();
     cin.ignore(numeric_limits<streamsize>::max(), '\n'); //clear cin stream
     cin.get();

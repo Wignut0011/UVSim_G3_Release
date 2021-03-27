@@ -1,4 +1,4 @@
-
+#include "VIEW.h"
 #include <map> //Memory
 #include <string>
 #include <algorithm> //If needed
@@ -9,7 +9,102 @@ using namespace std;
 #ifndef MILESTONE_1_CPU_H
 #define MILESTONE_1_CPU_H
 
+class MODEL{
+    VIEW view;
+
+public:
+    //constructor
+    MODEL(VIEW &v): view(v){};
+
+    //variables
+    string userNum;
+    int currentPage;
+
+    //functions
+    bool hasMemory(){
+        for(pair<size_t, string> element : inputMap){ ///location of map declaration needs to be fixed.
+            if(element.first != NULL){
+                return true;
+            }
+        }
+    };
+
+    ///function needs work
+    void updateMenu(int); ///used to tell the VIEW to display information if needed.
+    //*
+    // edit mode needs more
+    // if edit mode is being requested, check if memory has anything in it, and then send that
+    // to be displayed
+    // edit mode is page 6.
+    // *//
+    ///view.display(int) which is the page to load.
+
+    ///function on hold until how data in CONTROLLER is handled.
+    void loadMemory(MEMORY){
+
+    };
+    ///this is going to be coming from a file.
+    ///controller will be telling me which one to load.
+
+    void updateMemory(string opcode, int memLocation){
+
+        Memory.add(opcode, memLocation); ///this has an error on MEMORY undeclared identifier
+
+    };
+};
+//SUBCLASS MEMORY
+class MEMORY{
+
+public:
+    //Constructor
+    MEMORY(){
+
+        map<size_t, string> inputMap;
+    };
+    //variables
+    map<size_t, string> inputMap;
+    bool done = false;
+    int mapSize = 100;
+    string uInput;
+    string line;
+
+    //functions
+    void remove(int){
+
+        for(pair<size_t, string> element : inputMap){
+            if(element.second == int){ ///typecast issue
+                element.first = ""; ///typecast issue
+            }
+        }
+    };
+
+    //adds a line of user input into the memory
+    void add(string uInput, int memLocation){
+        for(pair<size_t, string> element : inputMap){
+            ///accessing KEY from element
+            if(element.first == ""){ ///typecast issue
+                element.first = uInput; ///typecast issue
+                element.second = memLocation;
+            }
+            else{
+                ///some error handling if we are trying to add to a location that already has something there.
+            }
+        }
+    };
+
+    map getter(){
+        return map;
+    };
+
+
+
+};
+
+
+//SUBCLASS CPU
+///not much to change at the moment.
 class CPU {
+    //variables
     int accumulator; //The singular register
     int IC; //For dump
     string IR; //For dump
@@ -19,11 +114,9 @@ class CPU {
     bool halt;
 
 public:
-    //----------------
-    // EXECUTION MODE
-    //----------------
 
-    explicit CPU(map<size_t ,string> &memory){
+    //this function needs to reference the map class.
+    void runCPU(map<size_t ,string> &memory){
 
         accumulator = 0;
         halt = false;
@@ -54,13 +147,7 @@ public:
                 for (size_t j = 0; j < diff; j++)
                     line.insert(1, "0");
             }
-
-            //Memory location contains data
             else {
-                //cout << "Sign: " << sign << endl;
-
-                //==========================================================
-                //   Gets the instruction code to be used in the switch
                 opcode = abs(stoi(line.substr(1, 2))); //Extract opcode substring
                 //==========================================================
                 //   Gets the data code to be used in the switch
@@ -69,12 +156,7 @@ public:
                 if (line[0] == '-')
                     operand *= -1;
             }
-            //=========================================================
-            //   Possibly a code block to find the location of each
-            //      operand as we are going through the code.
-            //=========================================================
-
-            //switch/case for each instruction
+            //switch case for each instruction
             switch (opcode) {
                 case 10:
                     //Read();
@@ -169,6 +251,7 @@ public:
 
                     //INVALID OPCODE
                 default:
+                    //stop execution and then tell view to display error.
                     cout << "ERROR: Invalid operation '" << opcode << "' at line " << i << ".\n"<<
                          "Please review valid instructions in readme.txt\nEnding program..." << endl;
                     IC = i;
