@@ -18,7 +18,9 @@ public:
     //Constructor
     VIEW() = default;
 
-    //Displays a requested page
+    VIEW(VIEW const &view) {}
+
+//Displays a requested page
     void Display(const int& p){
         currPage.str(menus.getMenu(p)); //Get menu page from library facade
 
@@ -162,7 +164,7 @@ private:
     const string WRITE_TEMPLATE = "Memory location %a currently has %v"; //Contains Regex tokens
     const string READ_TEMPLATE = "Please input a number: ";
 
-    
+
     //Check if the currPage stream is valid for the console
     void Validate(stringstream check){
 //        string page = currPage.str();
