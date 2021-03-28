@@ -1,3 +1,0 @@
-C:/Users/santiago/Desktop/UVSim_G3/Milestone 1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-C:/Users/santiago/Desktop/UVSim_G3/Milestone 1/cmake-build-debug/CMakeFiles/Milestone_1.dir
-C:/Users/santiago/Desktop/UVSim_G3/Milestone 1/cmake-build-debug/CMakeFiles/edit_cache.dir
