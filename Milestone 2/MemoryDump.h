@@ -31,6 +31,9 @@ public:
             if (i % 10 == 9)
                 cout << line << endl;
         }
+        for (int i = 0; i < 19; i++){
+            cout << endl;
+        }
     }
 private:
     MemDump(){};

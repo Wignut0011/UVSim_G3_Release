@@ -4,8 +4,8 @@
 
 int main(){
     VIEW view;
-    MODEL model(view);
-    CONTROLLER controller(model, view);
+    MODEL model((VIEW&)view);
+    CONTROLLER controller((MODEL&)model, (VIEW&)view);
     try{controller.StartSimulator();}
     catch (std::runtime_error &err) {
         std::cout << "\nFATAL ERROR: " << err.what() << "\nEXITING...\n";

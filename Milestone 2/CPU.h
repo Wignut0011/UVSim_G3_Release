@@ -1,4 +1,3 @@
-
 #include <map> //Memory
 #include <string>
 #include <algorithm> //If needed
@@ -9,7 +8,10 @@ using namespace std;
 #ifndef MILESTONE_1_CPU_H
 #define MILESTONE_1_CPU_H
 
+//SUBCLASS CPU
+///not much to change at the moment.
 class CPU {
+    //variables
     int accumulator; //The singular register
     int IC; //For dump
     string IR; //For dump
@@ -19,11 +21,9 @@ class CPU {
     bool halt;
 
 public:
-    //----------------
-    // EXECUTION MODE
-    //----------------
 
-    explicit CPU(map<size_t ,string> &memory){
+    //this function needs to reference the map class.
+    void runCPU(map<size_t ,string> &memory){
 
         accumulator = 0;
         halt = false;
@@ -54,13 +54,7 @@ public:
                 for (size_t j = 0; j < diff; j++)
                     line.insert(1, "0");
             }
-
-            //Memory location contains data
             else {
-                //cout << "Sign: " << sign << endl;
-
-                //==========================================================
-                //   Gets the instruction code to be used in the switch
                 opcode = abs(stoi(line.substr(1, 2))); //Extract opcode substring
                 //==========================================================
                 //   Gets the data code to be used in the switch
@@ -69,12 +63,7 @@ public:
                 if (line[0] == '-')
                     operand *= -1;
             }
-            //=========================================================
-            //   Possibly a code block to find the location of each
-            //      operand as we are going through the code.
-            //=========================================================
-
-            //switch/case for each instruction
+            //switch case for each instruction
             switch (opcode) {
                 case 10:
                     //Read();
@@ -169,6 +158,7 @@ public:
 
                     //INVALID OPCODE
                 default:
+                    //stop execution and then tell view to display error.
                     cout << "ERROR: Invalid operation '" << opcode << "' at line " << i << ".\n"<<
                          "Please review valid instructions in readme.txt\nEnding program..." << endl;
                     IC = i;

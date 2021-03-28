@@ -193,7 +193,7 @@ public:
         cout << "REGISTERS" <<
                 "\nAccumulator: " << accString <<
                 "\nInstruction Counter: "; cout.fill('0'); cout.width(2); cout << IC <<
-                "\nInstruction Register: ";; cout.fill('0'); cout.width(2); cout << IR <<
+                "\nInstruction Register: "; cout.fill('0'); cout.width(2); cout << IR <<
                 "\nOpcode: " << opcode <<
                 "\nOperand: "; cout.fill('0'); cout.width(2); cout << operand << endl << endl;
     }
@@ -215,6 +215,21 @@ public:
         if (accumulator > 9999 || accumulator < -9999)
             overflowCheck();
     }
+
+    /*
+    void overflowCheck()
+    {
+        cout << "Accumulator overflow error!" << endl;
+        if (accumulator > 9999)
+        {
+            accumulator -= 19998;
+        }
+        else if (accumulator < -9999)
+        {
+            accumulator += -19998;
+        }
+    }
+     */
 
     // Returns signed int from string
     //*stoi() doesn't like strings that have '+' or '-'

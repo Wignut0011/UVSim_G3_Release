@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <map>
 #include "CPU.h"
+#include <fstream>
 using namespace std;
 
 //For testing purposes, will return a test map
@@ -88,6 +89,8 @@ int main () {
     map<size_t, string> inputMap;
     bool done = false;
 
+
+
     for (size_t i = 0; i < 100; i++) {
         if (!done) {
             string line;
@@ -116,6 +119,8 @@ int main () {
     //Print message to user that the program is now executing
     cout << "------------Exiting Edit Mode------------\n---------Entering Execution Mode---------\n" << endl;
 
+
+
     //Run program
     CPU exe(inputMap);
 
@@ -125,6 +130,19 @@ int main () {
     cout << "\nPress any key to exit..."; cout.flush();
     cin.ignore(numeric_limits<streamsize>::max(), '\n'); //clear cin stream
     cin.get();
+
+    ofstream file ("test.txt");
+    if (file.is_open())
+    {
+        for(int i = 0; i < inputMap.size(); i++)
+        {
+            file << inputMap[i] << endl;
+        }
+        file.close();
+    }
+    else cout << "error with file\n";
+
+
 
     return 0;
 }
