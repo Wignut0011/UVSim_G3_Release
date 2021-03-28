@@ -17,9 +17,7 @@ class VIEW{
 public:
     //Constructor
     VIEW() = default;
-
-    VIEW(VIEW const &view) {}
-
+    
 //Displays a requested page
     void Display(const int& p){
         currPage.str(menus.getMenu(p)); //Get menu page from library facade
