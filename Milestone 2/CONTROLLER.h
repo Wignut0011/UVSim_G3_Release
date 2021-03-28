@@ -145,9 +145,9 @@ public:
         ofstream file (saveFile);
         if (file.is_open())
         {
-            for(int i = 0; i < model.memory.size(); i++)
+            for(int i = 0; i < model.memory.inputMap.size(); i++)
             {
-                file << model.memory[i] << endl;
+                file << model.memory.inputMap[i] << endl;
             }
             file.close();
             cout << "File saved successfully\n";
