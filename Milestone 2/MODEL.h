@@ -2,12 +2,15 @@
 #include "MemoryDump.h"
 #include "CPU.h"
 #include "VIEW.h"
+#include "MEMORY.h"
 
 class MODEL{
-    VIEW view;
+
 
 public:
-    MODEL(VIEW &v): view(v){};
+    VIEW view;
+    MEMORY memory;
+    MODEL(VIEW &v, MEMORY &m): view(v), memory(m){};
 
     //variables
     string userNum;
@@ -15,53 +18,26 @@ public:
 
     //functions
     bool hasMemory(){
-        for(pair<size_t, string> element : inputMap){
-            if(element.first != NULL){
-                return true;
-            }
+        if(memory.inputMap[0] != " "){
+            return true;
         }
     }
-    void updateMenu(int);
 
-    void loadMemory(MEMORY);
-    void updateMemory(string opcode, int memLocation){
-        Memory.add(opcode, memLocation);
-    }
-};
-
-class MEMORY{
-public:
-    MEMORY(){
-        map<size_t, string> inputMap;
-    };
-    //variables
-    bool done = false;
-    int mapSize = 100;
-    string uInput;
-    string line;
-
-    //functions
-    void remove(int){
-        for(pair<size_t, string> element : inputMap){
-            if(element.second == int){ ///typecast issue
-                element.first = ""; ///typecast issue
-            }
-        }
-    };
-
-    void add(string uInput, int memLocation){
-        for(pair<size_t, string> element : inputMap){
-            if(element.first == " "){
-                element.first = uInput;
-                element.second = memLocation;
-            }
-        }
-    };
-
-    map getter(){
-        return map;
+    ///how to get this working
+    void runCPU(){
+        runCPU(memory.inputMap);
     }
 
-private:
+    ///not totally sure what this is supposed to accomplish yet. I think I got it though.
+    void updateMenu(int page){
+        view.Display(page);
+    };
 
+    void loadMemory(MEMORY);  ///this function is probably not needed.
+
+    void updateMemory(string uInput, int memLocation){
+        ///this is going to call on memory.h to make things add to memory
+        ///memlocation is going to be from 0-99
+        memory.add(uInput, memLocation);
+    }
 };
