@@ -8,9 +8,9 @@ class MODEL{
 
 
 public:
-    VIEW view;
     MEMORY memory;
-    MODEL(VIEW &v, MEMORY &m): view(v), memory(m){};
+    MODEL& model;
+    VIEW& view;
 
     //variables
     string userNum;
@@ -23,9 +23,10 @@ public:
         }
     }
 
-    ///how to get this working
+    ///TODO
+    ///I don't think that this function will run correctly.
     void runCPU(){
-        runCPU(memory.inputMap);
+        runCPU();
     }
 
     ///not totally sure what this is supposed to accomplish yet. I think I got it though.
