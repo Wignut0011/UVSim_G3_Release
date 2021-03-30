@@ -147,8 +147,12 @@ public:
         {
             for(int i = 0; i < model.memory.inputMap.size(); i++)
             {
+<<<<<<< HEAD
 
                 file << model.memory[i] << endl;
+=======
+                file << model.memory.inputMap[i] << endl;
+>>>>>>> 64bd9646f9955ce0607cba1accec7c1101b9fbcd
             }
             file.close();
             cout << "File saved successfully\n";
