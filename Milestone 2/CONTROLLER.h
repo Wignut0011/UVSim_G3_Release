@@ -3,8 +3,8 @@
 #include <fstream>
 
 class CONTROLLER{
-    MODEL model;
-    VIEW view;
+    MODEL& model;
+    VIEW& view;
 
 public:
     //Constructor
@@ -15,23 +15,23 @@ public:
     };
 
 
-    /// TODO
-    /// readUserInput() should add new input at the end of memory to avoid overwriting data
-    /// navigation between readme pages
-    /// update view through model.updateMenu()
+    /// TODO: Make sure prompts on main menu/ read me files match up with expected input for page navigation
 
-    //Start of program
+    /// Start of program
     void StartSimulator()
     {
         //Landing Page
         loadMenu();
     }
 
-    // Gathers user input
+    /// Gathers user input for Edit Mode
     bool readUserInput()
     {
         bool done = false;
-        for (size_t i = 0; i < 100; i++) {
+        // MemSize is used to place input at the end of map to avoid overwriting data
+        int memSize = model.memory.inputMap.size();
+        //loops until memory is full of user input 5 digit exit code
+        for (size_t i = 0; i < (100 - memSize); i++) {
             if (!done)
             {
                 string line;
@@ -43,34 +43,36 @@ public:
                 string uInput;
                 cin >> uInput;
 
-                //stop gathering if user types -99999
+
                 if (uInput.length() == 6)
                 {
-                    if (uInput == "-99999")
+                    if (uInput == "-99999") // user is done with program and wishes to begin execution
                     {
                         done = true;
                         uInput = "+0000";
                     }
-                    else if (uInput == "+99999")
+                    else if (uInput == "+99999") // user would like to return to main menu and save their progress
                     {
                         return false;
                     }
-                    else
+                    else // user input an invalid 5 digit exit code
                     {
                         view.DisplayError();
                         i--;
                     }
                 }
 
-                // Check user input for errors
+                    // Check user input for errors
                 else if ((uInput[0] != '+') || (uInput.length() != 5) || (uInput[0] != '-'))
                 {
                     view.DisplayError();
                     i--;
                 }
 
-                // Send user input to MODEL to store in memory
-                else model.updateMemory(uInput, i);
+
+
+                    // Send user input to MODEL to store in memory
+                else model.updateMemory(uInput, memSize + i);
             }
                 // Format rest of empty cells
             else
@@ -80,49 +82,47 @@ public:
         return done;
     }
 
-    // Starts execution mode
+    /// Starts execution mode
     void executeMode()
     {
-        /// ask user if they wish to execute with current memory
-        view.Display(EXEC);
-            model.runCPU();
+        model.updateMenu(EXEC);
+        model.runCPU();
 
-            // After execution, user can enter "1" to return to main menu
-            string in;
-            cin >> in;
-            if (in == "1") loadMenu();
+        // After execution, user can enter "1" to return to main menu
+        string in;
+        cin >> in;
+        if (in == "1") loadMenu();
     }
 
 
-    // Loads a specified menu page
+    /// Loads a specified menu page
     void loadMenu()
     {
-        view.Display(MAIN);
+        model.updateMenu(MAIN);
 
         string in;
         cin >> in;
         int page = stoi(in);
         switch (page)
         {
-            case 1: loadMenu();
+            case 0: loadMenu();
                 break;
-            case 2: view.Display(README);
+            case 1: navigateReadMe(README_1);
                 break;
-            case 3: view.Display(EDIT);
+            case 2: model.updateMenu(EDIT);
                 if (readUserInput()) executeMode();
                 else loadMenu();
                 break;
-            case 4: view.Display(LOAD);
-            load();
-            //loadMenu();
+            case 3: load();
+                loadMenu();
                 break;
-            case 5: view.Display(SAVE);
-            save();
-            //loadMenu();
+            case 4: save();
+                loadMenu();
                 break;
-            case 6: executeMode();
+            case 5: executeMode();
                 break;
-            case 7: view.Display(DUMP);
+            case 6: exit(EXIT_SUCCESS);
+            case 7: model.updateMenu(DUMP);
                 break;
             default: view.DisplayInvalid();
                 // user can enter "1" to return to main menu
@@ -133,26 +133,35 @@ public:
         }
     }
 
-    // Saves the current program
+    /// Navigates the Read Me files
+    void navigateReadMe(int page)
+    {
+        model.updateMenu(page);
+        string in;
+        cin >> in;
+        int input = stoi(in);
+        if (input == 0) loadMenu();
+        else if (input >= 1 && input <= 5) navigateReadMe(input);
+        else
+        {
+            view.DisplayInvalid();
+            navigateReadMe(page);
+        }
+    }
+
+    /// Saves the current programs memory to .txt file
     bool save()
     {
-        view.Display(SAVE);
+        model.updateMenu(SAVE);
         cout << "\nSave file as: ";
         cin >> saveFile;
-
-        /// Save copy of current memory into a text file with the name provided
 
         ofstream file (saveFile);
         if (file.is_open())
         {
             for(int i = 0; i < model.memory.inputMap.size(); i++)
             {
-<<<<<<< HEAD
-
-                file << model.memory[i] << endl;
-=======
                 file << model.memory.inputMap[i] << endl;
->>>>>>> 64bd9646f9955ce0607cba1accec7c1101b9fbcd
             }
             file.close();
             cout << "File saved successfully\n";
@@ -162,14 +171,12 @@ public:
 
     }
 
-    // Loads a specified program
+    /// Loads a specified .txt file into memory
     bool load()
     {
-        view.Display(LOAD);
+        model.updateMenu(LOAD);
         cout << "\nLoad which file?: ";
         cin >> loadFile;
-
-        /// Load specified text file into current memory
 
         string line;
         ifstream file (loadFile);
@@ -184,12 +191,6 @@ public:
             cout << "File loaded successfully\n";
         }
         else cout <<"Unable to open file!\n";
-    }
-
-    // If an error is detected, tells view to display the correct error message
-    void error()
-    {
-
     }
 
 private:
