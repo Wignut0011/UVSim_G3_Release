@@ -6,11 +6,12 @@
 
 class MODEL{
 
-
 public:
     MEMORY memory;
+    CPU cpu;
     MODEL& model;
     VIEW& view;
+    MemDump& memDump;
 
     //variables
     string userNum;
@@ -24,14 +25,21 @@ public:
     }
 
     ///TODO
-    ///I don't think that this function will run correctly.
     void runCPU(){
         runCPU();
+        memDump.createDump((cpu));
     }
 
     ///not totally sure what this is supposed to accomplish yet. I think I got it though.
     void updateMenu(int page){
+        if(page == 6){
+            if(hasMemory() == true){
+                view.ContinueEdit(memory);
+            }
+        }
         view.Display(page);
+
+
     };
 
     void loadMemory(MEMORY);  ///this function is probably not needed.
