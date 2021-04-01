@@ -6,11 +6,12 @@
 
 class MODEL{
 
-
 public:
-    VIEW view;
     MEMORY memory;
-    MODEL(VIEW &v, MEMORY &m): view(v), memory(m){};
+    CPU cpu;
+    MODEL& model;
+    VIEW& view;
+    MemDump& memDump;
 
     //variables
     string userNum;
@@ -23,14 +24,22 @@ public:
         }
     }
 
-    ///how to get this working
+    ///TODO
     void runCPU(){
-        runCPU(memory.inputMap);
+        runCPU();
+        memDump.createDump((cpu));
     }
 
     ///not totally sure what this is supposed to accomplish yet. I think I got it though.
     void updateMenu(int page){
+        if(page == 6){
+            if(hasMemory() == true){
+                view.ContinueEdit(memory);
+            }
+        }
         view.Display(page);
+
+
     };
 
     void loadMemory(MEMORY);  ///this function is probably not needed.
