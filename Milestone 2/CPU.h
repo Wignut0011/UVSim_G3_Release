@@ -1,16 +1,17 @@
+#ifndef CPU_H
+#define CPU_H
 #include <map> //Memory
 #include <string>
 #include <algorithm> //If needed
 #include <iostream>
-
-using namespace std;
-
-#ifndef MILESTONE_1_CPU_H
-#define MILESTONE_1_CPU_H
+#include <utility>
 
 //SUBCLASS CPU
 class CPU {
+private: VIEW& view;
+public:
     //variables
+    map<size_t ,string> memory; //The memory
     int accumulator; //The singular register
     int IC; //For dump
     string IR; //For dump
@@ -19,11 +20,11 @@ class CPU {
     string userNum; //String for user I/O prompts
     bool halt;
 
-public:
-    VIEW& view;
-    //this function needs to reference the map class.
-    void runCPU(map<size_t ,string> &memory){
+    CPU (VIEW& v) :view(v){accumulator = 0; IC = 0; IR = ""; opcode = 0; operand = 0; userNum = ""; halt = true;}
 
+    //this function needs to reference the map class.
+    void runCPU(map<size_t ,string> m){
+        memory = move(m);
         accumulator = 0;
         halt = false;
 
@@ -214,6 +215,6 @@ public:
             return(y * -1);
         return y;
     };
-};
 
-#endif //MILESTONE_1_CPU_H
+};
+#endif
