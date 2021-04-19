@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <map>
 using namespace std;
 
 enum mainPages :size_t{MAIN = 0, README_1 = 1, README_2 = 2, README_3 = 3, README_4 = 4, README_5 = 5,
@@ -24,9 +25,9 @@ struct VIEW{
     //Variables
     size_t currMenu;
     string s_Display;
+    string& clipboard;
 
-
-    VIEW() {currMenu = 0; s_Display = "";}
+    VIEW(string& c): clipboard(c) {currMenu = 0; s_Display = "";}
 
     //Update menu number
     void Display(const int& p){

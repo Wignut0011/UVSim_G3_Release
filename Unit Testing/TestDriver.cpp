@@ -4,15 +4,18 @@
 #include <sstream>
 #include <thread>
 #include <string>
-#include <fstream>
 #include "test.h"
 #include "VIEW.h"
 #include "CONTROLLER.h"
-#include "MODEL.h"
-#include "CPU.h"
+
+using namespace std::chrono_literals;
 
 enum MenuOptions :size_t{README_MEN = 1, EDIT_MEN = 2, LOAD_MEN = 3, SAVE_MEN = 4, EXEC_MEN = 5, EXIT_MEN = 6};
-VIEW view;
+enum SubMenus :size_t{COPY_MEN = 1, CUT_MEN = 2, PASTE_MEN = 3, INSERT_MEN = 4, DELETE_MEN = 5};
+
+string clipboard;
+VIEW view(clipboard);
+stringstream input;
 
 /*
                             TESTING METHODOLOGY
@@ -48,6 +51,12 @@ VIEW view;
 			-Correct message is displayed when staged memory is erased
 			-Correctly displays message when load is successful
 			-Load was successful
+        Check if edit mode sub-menus operate correctly
+            -Cut last line
+            -Insert to line before last
+            -Copy last line
+            -Delete last line
+            -Paste to last line
 
 	CPU
         -Execute a halt program and check if results are accurate
@@ -61,8 +70,13 @@ VIEW view;
 
 void testing(){
     MODEL model((VIEW&) view);
-    CONTROLLER controller((MODEL&)model, (VIEW&)view);
+    CONTROLLER controller((MODEL&)model, (VIEW&)view, (string&) clipboard);
 };
+
+void type(string str){
+    std::this_thread::sleep_for(200ms); //Sleep to not run into thread fighting
+    input << str << std::endl;
+}
 
 int main(){
 
@@ -72,7 +86,6 @@ int main(){
     //Change cin buffer for testing
     std::streambuf *CIN_OLD;
     CIN_OLD = std::cin.rdbuf();
-    stringstream input;
     std::cin.rdbuf(input.rdbuf());
 
     //Init Simulator thread
@@ -88,44 +101,44 @@ int main(){
 
     //Controller attempts to update view at appropriate times
     //Go to readme
-    input << to_string(README_MEN) << std::endl;
+    type(to_string(README_MEN));
     test_(view.currMenu == README_1); ///Requests readme
-    input << "1" << std::endl; //Exit Readme
+    type("1"); //Exit Readme
 
     //Go to edit
-    input << to_string(EDIT_MEN) << std::endl;
+    type(to_string(EDIT_MEN));
     test_(view.currMenu == EDIT); ///Requests Edit
-    input << "-99999" << std::endl;
+    type("-99999");
 
     //Check if Controller is sending errors to view in...
     //Go to load
-    input << to_string(LOAD_MEN) << std::endl;
+    type(to_string(LOAD_MEN));
     test_(view.currMenu == MAIN
             && view.s_Display == to_string(LOAD)+" false"); ///Load Deny
-    input << "2" << std::endl;
+    type("2");
 
     //Go to save
-    input << to_string(SAVE_MEN) << std::endl;
+    type(to_string(SAVE_MEN));
     test_(view.currMenu == MAIN
             && view.s_Display == to_string(SAVE)+" false"); ///Save Deny
 
     //Go to execute
-    input << to_string(EXEC_MEN) << std::endl;
+    type(to_string(EXEC_MEN));
     test_(view.currMenu == MAIN
             && view.s_Display == to_string(EXEC)+" false"); ///Execute Deny
 
     //Check if Controller loads and saves correctly
     //Go to edit and create one line +4300, exit with +9999, and test hasMemory() by going to save menu
-    input << EDIT_MEN << std::endl;
-    input << "+4300" << std::endl;
-    input << "-99999" << std::endl;
-    input << SAVE_MEN << std::endl;
+    type(to_string(EDIT_MEN));
+    type("+4300");
+    type("-99999");
+    type(to_string(SAVE_MEN));
 
     test_(view.currMenu == SAVE); ///Save Allowed
 
     //Check displayed save contents
     test_(view.s_Display == "+4300"); ///Save Display
-    input << 1 << std::endl;
+    type("1");
 
     //Save file has correct information
     string saveTest;
@@ -139,27 +152,60 @@ int main(){
     save.close();
 
     //Change staged memory to check load
-    input << LOAD_MEN << std::endl;
+    type(to_string(LOAD_MEN));
     test_(view.s_Display == "+4300"); ///Load display
-    input << 3 << std::endl;
+    type("3");
     test_(view.s_Display == "EMTPY"); ///Correct message when erased memory
-    input << EDIT_MEN << std::endl;
-    input << "+0000" << std::endl;
-    input << "-99999" << std::endl;
-    input << LOAD_MEN << std::endl;
-    input << 1 << std::endl;
+    type(to_string(EDIT_MEN));
+    type("+0000");
+    type("-99999");
+    type(to_string(LOAD_MEN));
+    type("1");
     test_(view.s_Display == (to_string(LOAD) + " true")); ///Load message
-    input << EDIT_MEN << std::endl;
+    type(to_string(EDIT_MEN));
     test_(view.s_Display == "+4300"); ///Load was correct
-    input << "-99999" << std::endl;
 
+    //Check if edit mode sub-menus operate correctly
+    type("+0000");
+    type("+0001");
+
+    //Cut last line
+    type(to_string(CUT_MEN));
+    type("02");
+    test_(view.clipboard == "+0001" && view.s_Display == "+0000"); /// Test Cut (Line is Only in Clipboard)
+
+    //Insert to line before last
+    type(to_string(INSERT_MEN));
+    type("01");
+    test_(view.s_Display == "+0000"); ///Test Insert (Shifted Lines)
+
+    //Copy last line
+    type(to_string(COPY_MEN));
+    type("02");
+    test_(view.clipboard == "+0000"); ///Test Copy
+
+    //Delete last line
+    type(to_string(DELETE_MEN));
+    type("02");
+    test_(view.s_Display == "+0001"); ///Test Delete
+
+    //Paste to last line
+    type("+0000");
+    type(to_string(PASTE_MEN));
+    type("02");
+    test_(view.s_Display == "+0001"); ///Test Paste (Overwrite Line)
+
+    type("-9999");
+    type(to_string(LOAD_MEN));
+    type("1");
 
     ///                         CPU
     ///------------------------------------------------------------
 
 
     //Execute, and test if result passed
-    input << EXEC_MEN << std::endl;
+    type(to_string(EXEC_MEN));
+    std::this_thread::sleep_for(200ms);
     input << std::endl << std::endl;
 
     test_((view.s_Display == "END"
@@ -169,27 +215,29 @@ int main(){
             && n_IC == 0
             && n_IR == "+4300")); ///Halt program executed correctly
 
+    std::this_thread::sleep_for(200ms);
     input << std::endl << std::endl;
 
     //Go to load, erase staged memory, then go to edit
-    input << LOAD_MEN << std::endl;
-    input << 3<< std::endl;
-    input << EDIT_MEN << std::endl;
+    type(to_string(LOAD_MEN));
+    type("3");
+    type(to_string(EDIT_MEN));
 
     //Input addition program and save
-    input << "+1007" << std::endl; //0
-    input << "+1008" << std::endl; //1
-    input << "+2007" << std::endl; //2
-    input << "+3008" << std::endl; //3
-    input << "+2109" << std::endl; //4
-    input << "+1109" << std::endl; //5
-    input << "+4300" << std::endl; //6
-    input << "-99999" << std::endl;
+    type("+1007"); //0
+    type("+1008"); //1
+    type("+2007"); //2
+    type("+3008"); //3
+    type("+2109"); //4
+    type("+1109"); //5
+    type("+4300"); //6
+    type("-99999");
 
     //Go to execute and compare dump
-    input << EXEC_MEN << std::endl;
-    input << 9000 << std::endl;
-    input << 1000 << std::endl;
+    type(to_string(EXEC_MEN));
+    type("9000");
+    type("1000");
+    std::this_thread::sleep_for(200ms);
     input << std::endl;
 
     //CHECK WITH ANTHONY ON IMPLEMENTATION
@@ -199,31 +247,33 @@ int main(){
             && n_result[10] == "+0000"); ///Addition Program executed correctly
 
     //Repeat creating an addition program but put in an warnings and end in an error
+    std::this_thread::sleep_for(200ms);
     input << std::endl;
-    input << LOAD_MEN << std::endl;
-    input << 3 << std::endl;
-    input << EDIT_MEN << std::endl;
+    type(to_string(LOAD_MEN));
+    type("3");
+    type(to_string(EDIT_MEN));
 
-    input << "+1007" << std::endl; //0
-    input << "+1008" << std::endl; //1
-    input << "+2007" << std::endl; //2
-    input << "+3308" << std::endl; //3
-    input << "+2109" << std::endl; //4
-    input << "+1109" << std::endl; //5
-    input << "+1000" << std::endl; //6
-    input << "-99999" << std::endl;
+    type("+1007"); //0
+    type("+1008"); //1
+    type("+2007"); //2
+    type("+3308"); //3
+    type("+2109"); //4
+    type("+1109"); //5
+    type("+1000"); //6
+    type("-99999");
 
     //Execute, check if errors and warnings were attempted to be displayed
-    input << EXEC_MEN << std::endl;
-    input << 1000 << std::endl;
-    input << 1000 << std::endl;
+    type(to_string(EXEC_MEN));
+    type("1000");
+    type("1000");
     test_(view.s_Display == "3 0 0"); ///Overflow
-    input << 0 << std::endl;
+    type("0");
     test_(view.s_Display == "2 7 0"); ///Invalid opcode
 
     //Exit simulator, testing done
+    std::this_thread::sleep_for(200ms);
     input << std::endl;
-    input << 6 << endl;
+    type("6");
 
     sim.join();
     results_();
