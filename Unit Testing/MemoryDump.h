@@ -1,8 +1,7 @@
-#ifndef TEST_MEMORYDUMP_H
-#define TEST_MEMORYDUMP_H
+#ifndef MEMORYDUMP_H
+#define MEMORYDUMP_H
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <map>
 #include "VIEW.h"
 #include "CPU.h"
@@ -11,17 +10,10 @@ using namespace std;
 
 class MemDump : public VIEW{
 public:
-    static stringstream output;
     static void createDump(CPU cpu) {
-        //Save globals
-        n_result = cpu.memory;
-        n_accumulator = cpu.registers[ACCUMULATOR];
-        n_IC = cpu.registers[IC];
-        n_opcode = cpu.registers[OPCODE];
-        n_operand = cpu.registers[OPERAND];
-        n_IR = cpu.IR;
-
-        output.str(""); //reset stream
+        int isDouble = 0;
+//        curMap = cpu.memory;
+//        prevMap = curMap;
         //An empty memory, for some strange reason, made it's way here
         if (cpu.memory.empty())
             throw logic_error("For some reason, dump received an empty CPU. How? How did this happen?");
@@ -34,14 +26,14 @@ public:
                 accString.insert(1, "0");
 
         //Print register dump
-        output << "REGISTERS" <<
+        cout << "REGISTERS" <<
              "\nAccumulator: " << accString <<
-             "\nInstruction Counter: "; output.fill('0');
-             output.width(2); output << cpu.registers[IC] << "\nInstruction Register: ";
-             output.fill('0'); output.width(2); output << cpu.IR << "\nOpcode: " << cpu.registers[OPCODE] << "\nOperand: ";
-             output.fill('0'); output.width(2); output << cpu.registers[OPERAND] << endl << endl;
+             "\nInstruction Counter: "; cout.fill('0');
+             cout.width(2); cout << cpu.registers[IC] << "\nInstruction Register: ";
+             cout.fill('0'); cout.width(2); cout << cpu.IR << "\nOpcode: " << cpu.registers[OPCODE] << "\nOperand: ";
+             cout.fill('0'); cout.width(2); cout << cpu.registers[OPERAND] << endl << endl;
 
-        output << "\n\n\nMEMORY\n       00     01     02     03     04     05     06     07     08     09" << endl;
+        cout << "\n\n\nMEMORY\n       00     01     02     03     04     05     06     07     08     09" << endl;
         string line;
         for (int i = 0; i < 100; i++) {
             if (i % 10 == 0) {
@@ -51,21 +43,32 @@ public:
                 else
                     line = to_string(i);
             }
-            string memory = cpu.memory[i];
+            string memory = "";
+            memory = cpu.memory[i];
             size_t addZero = 5 - memory.length();
+            if (memory[1] == '+' || memory[1] == '-')
+                isDouble++;
 
-            for (int j = 0; j < addZero; j++)
-                memory.insert(1, "0");
+            for (int j = 0; j < addZero; j++) {
+                if (isDouble == 1)
+                    memory.insert(2, "0");
+                if (isDouble == 2)
+                    memory.append("0");
+                else
+                    memory.insert(1, "0");
+            }
+            if (isDouble == 2)
+                isDouble = 0;
 
             line += "  " + memory;
             if (i % 10 == 9)
-                output << line << endl;
+                cout << line << endl;
         }
         for (int i = 0; i < 7; i++){
-            output << endl;
+            cout << endl;
         }
-//        output << "Press ENTER key to return back to the Main Menu > ";
-//        output.flush();
+        cout << "Press ENTER key to return back to the Main Menu > ";
+        cout.flush();
     }
 private:
     MemDump()= default;;

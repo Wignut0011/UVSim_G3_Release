@@ -2,6 +2,7 @@
 #define TEST_DRIVER_H
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <thread>
 #include <string>
 #include "test.h"
@@ -15,7 +16,12 @@ enum SubMenus :size_t{COPY_MEN = 1, CUT_MEN = 2, PASTE_MEN = 3, INSERT_MEN = 4, 
 
 string clipboard;
 VIEW view(clipboard);
-stringstream input;
+//static stringstream input;
+const string buffFile = "Input_Buffer.txt";
+const string testFile = "Test_Input.txt";
+std::ifstream test;
+std::ofstream in;
+
 
 /*
                             TESTING METHODOLOGY
@@ -69,27 +75,40 @@ stringstream input;
  */
 
 void testing(){
+    std::streambuf *CIN_OLD;
+    CIN_OLD = std::cin.rdbuf();
+    std::cin.rdbuf(in.rdbuf());
+
     MODEL model((VIEW&) view);
     CONTROLLER controller((MODEL&)model, (VIEW&)view, (string&) clipboard);
+    controller.StartSimulator();
+
+    std::cin.rdbuf(CIN_OLD); //Return cin buffer to normal
 };
 
 void type(string str){
     std::this_thread::sleep_for(200ms); //Sleep to not run into thread fighting
-    input << str << std::endl;
+    std::string input;
+    test >> input;
+    in << input;
+    std::this_thread::sleep_for(200ms); //Sleep to not run into thread fighting
 }
 
 int main(){
+    test.open(testFile);
+    in.open(buffFile);
 
     const string saveFile = "Save.mem";
 
 
-    //Change cin buffer for testing
-    std::streambuf *CIN_OLD;
-    CIN_OLD = std::cin.rdbuf();
-    std::cin.rdbuf(input.rdbuf());
+    //Change cout buffer for testing
+//    std::streambuf *COUT_OLD;
+//    COUT_OLD = std::cout.rdbuf();
+//    std::cout.rdbuf(in.rdbuf());
 
     //Init Simulator thread
     std::thread sim (testing);
+//    testing();
 
     ///                    Testing Start
     ///                     CONTROLLER
@@ -97,6 +116,7 @@ int main(){
 
 
     ///Execute StartSimulator and test if at main menu
+    std::this_thread::sleep_for(1000ms); //Sleep to not run into thread fighting
     test_(view.currMenu == MAIN);
 
     //Controller attempts to update view at appropriate times
@@ -206,7 +226,8 @@ int main(){
     //Execute, and test if result passed
     type(to_string(EXEC_MEN));
     std::this_thread::sleep_for(200ms);
-    input << std::endl << std::endl;
+    type("");
+    type("");
 
     test_((view.s_Display == "END"
             && n_accumulator == 0
@@ -216,7 +237,8 @@ int main(){
             && n_IR == "+4300")); ///Halt program executed correctly
 
     std::this_thread::sleep_for(200ms);
-    input << std::endl << std::endl;
+    type("");
+    type("");
 
     //Go to load, erase staged memory, then go to edit
     type(to_string(LOAD_MEN));
@@ -238,7 +260,7 @@ int main(){
     type("9000");
     type("1000");
     std::this_thread::sleep_for(200ms);
-    input << std::endl;
+    type("");
 
     //CHECK WITH ANTHONY ON IMPLEMENTATION
     test_(n_result[7] == "+9000"
@@ -248,7 +270,7 @@ int main(){
 
     //Repeat creating an addition program but put in an warnings and end in an error
     std::this_thread::sleep_for(200ms);
-    input << std::endl;
+    type("");
     type(to_string(LOAD_MEN));
     type("3");
     type(to_string(EDIT_MEN));
@@ -272,18 +294,21 @@ int main(){
 
     //Exit simulator, testing done
     std::this_thread::sleep_for(200ms);
-    input << std::endl;
-    type("6");
+    type("");
 
-    sim.join();
+    type("6");
     results_();
+    sim.join();
+
 
     if (remove(saveFile.c_str()) != 0)
         cout << "SAVE FILE COULD NOT BE ERASED, ERASE Save.mem BEFORE NEXT TEST"
              << std::endl;
 
-    std::cin.rdbuf(CIN_OLD); //Return cin buffer to normal
+//    std::cin.rdbuf(COUT_OLD); //Return cout buffer to normal
     cin.get();
+    test.close();
+    in.close();
     return 0;
 }
 #endif

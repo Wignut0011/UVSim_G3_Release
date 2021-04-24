@@ -40,7 +40,7 @@ public:
 
     ///not totally sure what this is supposed to accomplish yet. I think I got it though.
     void updateMenu(int page){
-        if(page == 6 && hasMemory()){
+        if(page == mainPages::EDIT && hasMemory()){
             view.ContinueEdit(memory);
         }
         else

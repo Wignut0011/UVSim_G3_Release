@@ -24,7 +24,7 @@ namespace {
         }
     }
     void results_(){
-        std::cout << "RESULTS\n-------" << nPass << " passed\n" << nFail << " failed" << std::endl;
+        std::cout << "\nRESULTS\n-------\n" << nPass << " passed\n" << nFail << " failed" << std::endl;
     }
 }
 #define fail_(text)         do_fail(text, __FILE__, __LINE__)

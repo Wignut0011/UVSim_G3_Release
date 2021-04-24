@@ -20,13 +20,13 @@ enum errorTypes :size_t     {SIGN = 1, INV_OPCODE = 2, OVER_FLOW = 3, UNDER_FLOW
 enum messageType :size_t    {INV_MESSAGE = 0, LOAD_SUCCESS = 1, LOAD_FAIL = 2, SAVE_SUCCESS = 3, SAVE_FAIL = 4,
                              LOAD_REJECTION = 5, EXECUTION_REJECTION = 6, SIGN_ERROR = 7, INV_ERROR = 8,
                              OVER_WARNING = 9, UNDER_WARNING = 10, WRITE_TEMPLATE = 11, READ_TEMPLATE = 12,
-                             HALT_MESSAGE = 13};
+                             HALT_MESSAGE = 13, SUB_REJ_MESSAGE = 14, SUB_CLIP_MESSAGE = 15};
 
-enum mainPages :size_t      {MAIN = 0, README_1 = 1, README_2 = 2, README_3 = 3, README_4 = 4, README_5 = 5,
-                             EDIT = 6, EXEC = 7, SAVE = 8, LOAD = 9};
+enum mainPages :size_t      {MAIN = 0, README_1 = 1, README_2 = 2, README_3 = 3, README_4 = 4, README_5 = 5, README_6 = 6,
+                             EDIT = 7, EXEC = 8, SAVE = 9, LOAD = 10};
 
-enum subPages :size_t       {ED_COPY = 10, ED_CUT = 11, ED_PASTE = 12, ED_INSERT = 13, ED_DELETE = 14, NEXT_SUB = 15,
-                             PREV_SUB = 16};
+enum subPages :size_t       {ED_COPY = 11, ED_CUT = 12, ED_PASTE = 13, ED_INSERT = 14, ED_DELETE = 15, NEXT_SUB = 16,
+                             PREV_SUB = 17};
 
 enum formatting :size_t     {CURR_PAGE_NUM = 0, EXEC_PAGES = 1, MEM_PAGES = 2, LINE_SPACE = 3, CURR_MEM_PAGE = 4};
 
@@ -65,52 +65,87 @@ public:
         }
 
         else if(p >= subPages::ED_COPY && p <=subPages::PREV_SUB) { //Sub-menu
+            string output; //Reload sub-menu
 
-            string output = menus.getMenu(p); //Reload sub-menu
+            //Page limit
+            if ((p == NEXT_SUB && pageFormat[CURR_MEM_PAGE] >= memCache.size()) ||
+                (p == PREV_SUB && pageFormat[CURR_MEM_PAGE] <= 1)) {
+                DisplayInvalid(INV_MESSAGE);
+                return;
+            }
 
-            if (p == NEXT_SUB || p == PREV_SUB) { //Next memory page
+            //Is empty, print invalid
+            if (memCache.empty()){
+                DisplayInvalid(SUB_REJ_MESSAGE);
+                return;
+            }
+
+            //Next memory page
+            if (p == NEXT_SUB || p == PREV_SUB) {
+
+                output = menus.getMenu(pageFormat[CURR_PAGE_NUM]); //Make sure page reload is accurate
+
                 //Update current page
                 (p == NEXT_SUB) ? pageFormat[CURR_MEM_PAGE]++ : pageFormat[CURR_MEM_PAGE]--;
 
                 //Populate with saved data
                 string line;
-                for (auto l : memCache[CURR_MEM_PAGE]) { //Populate list starting at last page
+                for (auto l : memCache[pageFormat[CURR_MEM_PAGE]-1]) { //Populate list starting at last page
                     if (l != '\n') //Add char to line
                         line += l;
 
                     else { //Add line to page
                         output = regex_replace(output, regex(string(TOKENS[LINE_TOKEN]) + "( ){" +
-                                               to_string(line.size()) + "}"), line, regex_constants::format_first_only);
+                                                             to_string(line.size()-2) + "}"), line,
+                                               regex_constants::format_first_only);
+                        line = "";
                     }
                 }
+                //Make sure to print last line
+                if (!line.empty())
+                    output = regex_replace(output, regex(string(TOKENS[LINE_TOKEN]) + "( ){" +
+                                                         to_string(line.size()-2) + "}"), line,
+                                           regex_constants::format_first_only);
             }
+            //Loading a sub-menu
             else {
+                output = menus.getMenu(p); //Reload sub-menu
                 pageFormat[CURR_PAGE_NUM] = p;
 
-                //Populate page no
-                output = regex_replace(output, regex(TOKENS[PAGE_TOKEN]), to_string(pageFormat[MEM_PAGES]) +
-                                                                          ((pageFormat[MEM_PAGES] < 10) ? " " : ""));
-
                 string line;
-                for (auto l : memCache[MEM_PAGES]) { //Populate list starting at last page
+//                string test = memCache[0];
+                for (auto l : memCache[pageFormat[MEM_PAGES]-1]) { //Populate list starting at last page
                     if (l != '\n') //Add char to line
                         line += l;
 
                     else { //Add line to page
                         output = regex_replace(output, regex(string(TOKENS[LINE_TOKEN]) + "( ){" +
-                                                             to_string(line.size()) + "}"), line,
+                                                             to_string(line.size()-2) + "}"), line,
                                                regex_constants::format_first_only);
+                        line = "";
                     }
                 }
+                if (!line.empty())
+                    output = regex_replace(output, regex(string(TOKENS[LINE_TOKEN]) + "( ){" +
+                                                     to_string(line.size()-2) + "}"), line,
+                                       regex_constants::format_first_only);
             }
-            output = regex_replace(output,regex(TOKENS[LINE_TOKEN]), "  "); //Empty line tokens
 
-            //Does sub-menu need clipboard?
-            if (p == ED_INSERT || p == ED_PASTE) {
+            //Populate page no
+            output = regex_replace(output, regex(TOKENS[PAGE_TOKEN]), to_string(pageFormat[CURR_MEM_PAGE]) +
+                                                                      ((pageFormat[CURR_MEM_PAGE] < 10) ? " " : ""));
+
+            //Does sub-menu need clipboard displayed?
+            if (pageFormat[CURR_PAGE_NUM] == ED_INSERT || pageFormat[CURR_PAGE_NUM] == ED_PASTE) {
                 output = regex_replace(output,regex(string(TOKENS[CLIP_TOKEN])+"( ){"+
                                                     to_string(clipboard.size()-2)+"}"), clipboard);
             }
-            cout << output; //Update View
+
+//            output = regex_replace(output,regex(TOKENS[LINE_TOKEN]), "  "); //Empty line tokens
+            currPage.str(output);
+
+            cout << regex_replace(currPage.str(), regex(TOKENS[LINE_TOKEN]), "  "); //Update View
+            cout.flush();
         }
 
         else //Not a valid menu number
@@ -171,7 +206,7 @@ public:
     }
 
     //Display line on screen in Edit Mode
-    void DispLine(const string& line){
+    void DispLine(string line){
         if (pageFormat[CURR_PAGE_NUM] != EDIT)//Make sure we are in the right page.
             throw logic_error(string("ERROR: Simulator attempted to display a line in Edit mode while in page "
                                            + to_string(pageFormat[CURR_PAGE_NUM])));
@@ -180,6 +215,8 @@ public:
         NewPage(MEM_PAGES, EDIT);
 
         //Update memCache
+        if (line[1] == ':') //Make sure to format right
+            line.insert(0,"0");
         if (pageFormat[MEM_PAGES] > memCache.size()) //New page was added
             memCache.emplace_back(line);
         else
@@ -194,20 +231,23 @@ public:
 
     //Continues the memory state of Edit Mode
     void ContinueEdit(MEMORY mem){
-        if (pageFormat[CURR_PAGE_NUM] != MAIN)//Make sure we are in the right page.
+        if ((pageFormat[CURR_PAGE_NUM] != MAIN) && (pageFormat[CURR_PAGE_NUM] < ED_COPY || pageFormat[CURR_PAGE_NUM] > PREV_SUB))//Make sure we are in the right page.
             throw logic_error(string("Simulator attempted to access Edit Mode not from main menu or sub-menu, "
                                      "but instead in page " + to_string(pageFormat[CURR_PAGE_NUM])));
 
         pageFormat[MEM_PAGES] = 0;//Reset mem page curr
+        memCache.clear();
 
         for (auto l : mem.getMap()) {//Reset memCache
-            if (l.first % 9 == 0) { //Append new page
+            if (l.first % 10 == 0) { //Append new page
                 pageFormat[MEM_PAGES]++;
-                memCache.emplace_back(l.second);
+                memCache.emplace_back((l.first<=9)?
+                    ("0"+to_string(l.first)+": "+l.second):(to_string(l.first)+": "+l.second));
             }
 
             else{ //Insert to current page
-                memCache.back().append("\n" + l.second);
+                memCache.back().append((l.first<10)?
+                                       ("\n0"+to_string(l.first)+": "+l.second):("\n"+to_string(l.first)+": "+l.second));
             }
         }
         pageFormat[CURR_MEM_PAGE] = pageFormat[MEM_PAGES];
@@ -231,11 +271,30 @@ public:
         else
             start = (pageFormat[MEM_PAGES]-1)*10;
 
-        for(size_t i = start; i < mem.getMap().size(); i++){ // Replace line tokens with memory
-            currPage.str(regex_replace(currPage.str(), regex(TOKENS[LINE_TOKEN]+"( ){"+
-                                           to_string((mem.inputMap[i].length()>9)?mem.inputMap[i].length()+1:mem.inputMap[i].length()+2)+"}"),
-                                       to_string(i)+": "+mem.inputMap[i], regex_constants::format_first_only)); //Update line
+        string line;
+//                string test = memCache[0];
+        for (auto l : memCache[pageFormat[MEM_PAGES]-1]) { //Populate list starting at last page
+            if (l != '\n') //Add char to line
+                line += l;
+
+            else { //Add line to page
+                currPage.str(regex_replace(currPage.str(), regex(string(TOKENS[LINE_TOKEN]) + "( ){" +
+                                                     to_string(line.size()-2) + "}"), line,
+                                       regex_constants::format_first_only));
+                line = "";
+            }
         }
+        if (!line.empty())
+            currPage.str(regex_replace(currPage.str(), regex(string(TOKENS[LINE_TOKEN]) + "( ){" +
+                                                             to_string(line.size()-2) + "}"), line,
+                                       regex_constants::format_first_only));
+
+
+//        for(size_t i = start; i < mem.getMap().size(); i++){ // Replace line tokens with memory
+//            currPage.str(regex_replace(currPage.str(), regex(TOKENS[LINE_TOKEN]+"( ){"+
+//                                           to_string((mem.inputMap[i].length()>9)?mem.inputMap[i].length()+1:mem.inputMap[i].length()+2)+"}"),
+//                                       to_string(i)+": "+mem.inputMap[i], regex_constants::format_first_only)); //Update line
+//        }
 
 //        if (lineSpace-mem.getMap().size()-start <= mem.getMap().size()-start)
             pageFormat[LINE_SPACE] = PRINT_LINE+(mem.getMap().size()-start); //Compensate for lineSpace
@@ -245,12 +304,12 @@ public:
     }
 
     //User's input is invalid, print message on view
-    void DisplayInvalid(){
+    void DisplayInvalid(size_t invCode){
 
         Validate(stringstream(currPage.str())); //Check if page is valid
 
         cout << regex_replace(currPage.str(), regex(TOKENS[LINE_TOKEN]), "  "); //Re-display View
-        cout << MESSAGES[INV_MESSAGE];// Display message
+        cout << MESSAGES[invCode];// Display message
         cout.flush();
     }
 
@@ -389,7 +448,7 @@ private:
     const string TOKENS[6] = {"%l", "%p" ,"%a", "%v", "%s", "%c"};
 
     //CONST string messages, pre-made template messages
-    const string MESSAGES[14] = {"ERROR: Invalid Option, try again. > ",
+    const string MESSAGES[16] = {"ERROR: Invalid Option, try again. > ",
     "Memory Successfully Loaded!",
     "Memory Could Not Load",
     "Memory Successfully Saved!",
@@ -402,7 +461,9 @@ private:
     "Warning: Underflow detected",
     "Memory location %a currently has %v",
     "Please input a number: %l",
-    "HALT Reached. Press ENTER to display memory dump."};
+    "HALT Reached. Press ENTER to display memory dump.",
+    "Please input at least one line before using that >",
+    "Clipboard is empty >"};
 
 
     //Check if the currPage stream is valid for the console

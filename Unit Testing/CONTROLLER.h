@@ -49,45 +49,322 @@ public:
                 string uInput;
                 cin >> uInput;
 
-                if (uInput.length() == 6)
-                {
+                if (uInput.length() == 6) {
                     if (uInput == "-99999") /// user is done with program and not to save
                     {
                         view.Display(MAIN);
                         done = true;
 //                        uInput = "+0000";
-                    }
-                    else if (uInput == "+99999") /// user would like to return to main menu and save their progress
+                    } else if (uInput == "+99999") /// user would like to return to main menu and save their progress
                     {
 //                        return false;
                         if (!model.hasMemory())
                             view.MainError(2, false);
-                        else{
+                        else {
                             ofstream save(saveFile);
                             if (save) {
                                 for (int i = 0; i < model.GetMemory().getMap().size(); i++) {
                                     save << model.GetMemory().getMap()[i] << "\n";
                                 }
                                 view.MainError(2, true);
-                            }
-                            else
+                            } else
                                 view.MainError(2, false);
                             save.close();
 
                         }
                         done = true;
                     }
-                    else // user input an invalid 5 digit exit code
-                    {
-                        view.DisplayInvalid();
-                        i--;
-                    }
                 }
+                else if(uInput.length() == 1 && isdigit(uInput[0]) &&
+                    (stoi(uInput) >= ED_COPY-10 && stoi(uInput) <= ED_DELETE-10)) { //Sub-menu
 
-                    // Check user input for errors
+                    //Check if it has memory
+                    string lineNum;
+                    switch (stoi(uInput)) {
+                        case 1: { //Copy
+                            if (!model.hasMemory()) //Is the clipboard empty
+                                view.DisplayInvalid(SUB_REJ_MESSAGE);
+
+                            else {
+                                view.Display(subPages::ED_COPY);
+                                while (lineNum.empty()) { //Stay in sub-menu until selection
+                                    //get the selected lineNum
+                                    while (lineNum.empty()) {
+                                        cin >> lineNum;
+                                        bool pass = true;
+                                        for (auto l : lineNum)//Check if contains only digits
+                                            if (!isdigit(l))
+                                                pass = false;
+                                        if ((lineNum.length() != 2 && lineNum.length() != 1) || !pass) { //Not valid
+                                            view.DisplayInvalid(INV_MESSAGE);
+                                            lineNum = "";
+                                        }
+                                    }
+                                    if (lineNum.length() == 1) {
+                                        switch (stoi(lineNum)) {
+                                            case 1: {
+                                                view.Display(subPages::NEXT_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 2: {
+                                                view.Display(subPages::PREV_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 3: {
+                                                view.ContinueEdit(model.GetMemory());
+                                            }
+                                        }
+                                    }
+                                    else if (stoi(lineNum) < model.GetMemory().getMap().size()){
+                                        clipboard = model.GetMemory().getMap().at(stoi(lineNum));
+                                        view.ContinueEdit(model.GetMemory());
+                                        break;
+                                    }
+                                    else {
+                                        view.DisplayInvalid(INV_MESSAGE);
+                                        lineNum = "";
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case 2: { //Cut
+                            if (!model.hasMemory()) //Is there any memory yet
+                                view.DisplayInvalid(SUB_REJ_MESSAGE);
+
+                            else {
+                                view.Display(subPages::ED_CUT);
+                                while (lineNum.empty()) { //Stay in sub-menu until selection
+                                    //get the selected lineNum
+                                    while (lineNum.empty()) {
+                                        cin >> lineNum;
+                                        bool pass = true;
+                                        for (auto l : lineNum)//Check if contains only digits
+                                            if (!isdigit(l))
+                                                pass = false;
+                                        if ((lineNum.length() != 2 && lineNum.length() != 1) || !pass) { //Not valid
+                                            view.DisplayInvalid(INV_MESSAGE);
+                                            lineNum = "";
+                                        }
+                                    }
+                                    if (lineNum.length() == 1) {
+                                        switch (stoi(lineNum)) {
+                                            case 1: {
+                                                view.Display(subPages::NEXT_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 2: {
+                                                view.Display(subPages::PREV_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 3: {
+                                                view.ContinueEdit(model.GetMemory());
+                                            }
+                                        }
+                                    }
+                                    else if (stoi(lineNum) < model.GetMemory().getMap().size()){
+                                        clipboard = model.GetMemory().getMap().at(stoi(lineNum)); //gives a string
+                                        for (size_t j = stoi(lineNum);j != model.GetMemory().getMap().size() - 1; j++) {
+                                            model.GetMemory().getMap().at(j) = model.GetMemory().getMap().at(j + 1);
+                                        }
+                                        model.GetMemory().getMap().erase(model.GetMemory().getMap().size()-1);
+                                        view.ContinueEdit(model.GetMemory());
+                                        break;
+                                    }
+                                    else {
+                                        view.DisplayInvalid(INV_MESSAGE);
+                                        lineNum = "";
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case 3: { //Paste
+                            if (clipboard.empty()) //Is the clipboard empty
+                                view.DisplayInvalid(SUB_CLIP_MESSAGE);
+
+                            else if (!model.hasMemory()){ //Is there any memory yet, just paste
+                                model.updateMemory(clipboard, 0);
+                                view.DispLine(to_string(i)+": "+clipboard);
+                            }
+
+                            else {
+                                view.Display(subPages::ED_PASTE);
+                                while (lineNum.empty()) { //Stay in sub-menu until selection
+                                    //get the selected lineNum
+                                    while (lineNum.empty()) {
+                                        cin >> lineNum;
+                                        bool pass = true;
+                                        for (auto l : lineNum)//Check if contains only digits
+                                            if (!isdigit(l))
+                                                pass = false;
+                                        if ((lineNum.length() != 2 && lineNum.length() != 1) || !pass) { //Not valid
+                                            view.DisplayInvalid(INV_MESSAGE);
+                                            lineNum = "";
+                                        }
+                                    }
+                                    if (lineNum.length() == 1) {
+                                        switch (stoi(lineNum)) {
+                                            case 1: {
+                                                view.Display(subPages::NEXT_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 2: {
+                                                view.Display(subPages::PREV_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 3: {
+                                                view.ContinueEdit(model.GetMemory());
+                                            }
+                                        }
+                                    }
+                                    else if (stoi(lineNum) < model.GetMemory().getMap().size()){
+                                        model.updateMemory(clipboard, stoi(lineNum));
+                                        view.ContinueEdit(model.GetMemory());
+                                        break;
+                                    }
+                                    else {
+                                        view.DisplayInvalid(INV_MESSAGE);
+                                        lineNum = "";
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case 4: { //Insert whatever is on the clipboard.
+                            if (clipboard.empty()) //Is the clipboard empty
+                                view.DisplayInvalid(SUB_CLIP_MESSAGE);
+
+                            else if (!model.hasMemory()) { //Is there any memory yet
+                                model.updateMemory(clipboard, 0);
+                                view.DispLine(to_string(i)+": "+clipboard);
+                            }
+
+                            else {
+                                view.Display(subPages::ED_INSERT);
+                                while (lineNum.empty()) { //Stay in sub-menu until selection
+                                    while (lineNum.empty()) {
+                                        cin >> lineNum;
+                                        bool pass = true;
+                                        for (auto l : lineNum)//Check if contains only digits
+                                            if (!isdigit(l))
+                                                pass = false;
+                                        if ((lineNum.length() != 2 && lineNum.length() != 1) || !pass) { //Not valid
+                                            view.DisplayInvalid(INV_MESSAGE);
+                                            lineNum = "";
+                                        }
+                                    }
+                                    if (lineNum.length() == 1) {
+                                        switch (stoi(lineNum)) {
+                                            case 1: {
+                                                view.Display(subPages::NEXT_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 2: {
+                                                view.Display(subPages::PREV_SUB);
+                                                lineNum = "";
+                                                break;
+                                            }
+                                            case 3: {
+                                                view.ContinueEdit(model.GetMemory());
+                                            }
+                                        }
+                                    }
+                                    else if (stoi(lineNum) < model.GetMemory().getMap().size()){
+                                        model.GetMemory().getMap()[model.GetMemory().getMap().size()] = model.GetMemory().getMap()[
+                                                model.GetMemory().getMap().size() - 1];
+                                        for (size_t j = model.GetMemory().getMap().size() - 1;
+                                             j != stoi(lineNum); j--) {
+                                            model.GetMemory().getMap().at(j) = model.GetMemory().getMap().at(j - 1);
+                                        }
+                                        model.updateMemory(clipboard, stoi(lineNum));
+                                        view.ContinueEdit(model.GetMemory());
+                                        break;
+
+                                    }
+                                    else {
+                                        view.DisplayInvalid(INV_MESSAGE);
+                                        lineNum = "";
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case 5: { ///Delete request
+                            if (!model.hasMemory()) //Is there any memory yet
+                                view.DisplayInvalid(SUB_REJ_MESSAGE);
+
+                            else {
+                                view.Display(subPages::ED_DELETE);
+                                while (lineNum.empty()) { //Stay in sub-menu until selection
+                                    while (lineNum.empty()) {
+                                        cin >> lineNum;
+                                        bool pass = true;
+                                        for (auto l : lineNum)//Check if contains only digits
+                                            if (!isdigit(l))
+                                                pass = false;
+                                        if ((lineNum.length() != 2 && lineNum.length() != 1) || !pass) { //Not valid
+                                            view.DisplayInvalid(INV_MESSAGE);
+                                            lineNum = "";
+                                        }
+                                    }
+                                     if(lineNum.length() == 1) {
+                                         switch (stoi(lineNum)) {
+                                             case 1: {
+                                                 view.Display(subPages::NEXT_SUB);
+                                                 lineNum = "";
+                                                 break;
+                                             }
+                                             case 2: {
+                                                 view.Display(subPages::PREV_SUB);
+                                                 lineNum = "";
+                                                 break;
+                                             }
+                                             case 3: {
+                                                 view.ContinueEdit(model.GetMemory());
+                                                 break;
+                                             }
+                                         }
+                                     }
+                                     else if (stoi(lineNum) < model.GetMemory().getMap().size()){
+                                         if (model.GetMemory().inputMap.size() == 1) //Just one entry
+                                             model.GetMemory().getMap().erase(0);
+                                         else {
+                                             for (size_t j = stoi(lineNum); j != model.GetMemory().getMap().size() - 1; j++) {
+                                                 model.GetMemory().getMap().at(j) = model.GetMemory().getMap().at(j + 1);
+                                             }
+                                             model.GetMemory().getMap().erase(model.GetMemory().getMap().size()-1);
+                                         }
+                                         view.ContinueEdit(model.GetMemory());
+                                         break;
+                                     }
+                                     else {
+                                         view.DisplayInvalid(INV_MESSAGE);
+                                         lineNum = "";
+                                     }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    i = model.GetMemory().inputMap.size()-1;
+
+//                    if (model.GetMemory().inputMap.empty()) //If empty, start at beginning
+//                        i -= 1;
+//                    else //Not empty, restart at next position
+//                        i -= 2;
+                }
+                // Check user input for errors
                 else if ((uInput[0] != '+' && uInput[0] != '-') || uInput.length() != 5)
                 {
-                    view.DisplayInvalid();
+                    view.DisplayInvalid(INV_MESSAGE);
                     i--;
                 }
 
@@ -133,11 +410,11 @@ public:
         string in;
         int page;
         while(true){
-            while (in == "") { //Make sure user inputs a number
+            while (in.empty()) { //Make sure user inputs a number
                 cin >> in;
                 if (in != "1" && in != "2" && in != "3" && in != "4" && in != "5" && in != "6") {
                     in = "";
-                    view.DisplayInvalid();
+                    view.DisplayInvalid(INV_MESSAGE);
                 } else page = stoi(in);
             }
 
@@ -168,7 +445,7 @@ public:
                     exit(EXIT_SUCCESS); //exit will be handled here. If in main, exit return is 1
                     break;
                 default:
-                    view.DisplayInvalid(); //It just displays a message, no new page.
+                    view.DisplayInvalid(INV_MESSAGE); //It just displays a message, no new page.
                     break;
             }
             in = "";
@@ -188,7 +465,7 @@ public:
                 cin >> in;
                 if (in != "1" && in != "2" && in != "3") {
                     in = "";
-                    view.DisplayInvalid();
+                    view.DisplayInvalid(INV_MESSAGE);
                 } else input = stoi(in);
             }
             if (input == 1) { //Return to main menu
@@ -202,7 +479,7 @@ public:
                 navigated= true;
             }
             //Middle pages, has next and previous options
-            else if (page > 1 && page < 5) {
+            else if (page > 1 && page < 6) {
                 switch (input) {
                     case 2:
                         navigateReadMe(page + 1); //Next Page
@@ -213,14 +490,14 @@ public:
                         navigated = true;
                         break;
                     default:
-                        view.DisplayInvalid();
+                        view.DisplayInvalid(INV_MESSAGE);
                 }
-            } else if (page == 5 && input == 2) { //Last page, no next button
+            } else if (page == 6 && input == 2) { //Last page, no next button
                 navigateReadMe(page - 1);
                 navigated = true;
             }
             if (!navigated) {
-                view.DisplayInvalid();
+                view.DisplayInvalid(INV_MESSAGE);
             }
         }
     }
@@ -242,7 +519,7 @@ public:
                 cin >> answ;
                 if (answ != "1" && answ != "2") {
                     answ = "";
-                    view.DisplayInvalid();
+                    view.DisplayInvalid(INV_MESSAGE);
                 }
             }
             if (stoi(answ))
@@ -302,7 +579,7 @@ public:
                 cin >> answ;
                 if (answ != "1" && answ != "2" && answ != "3"){
                     answ = "";
-                    view.DisplayInvalid();
+                    view.DisplayInvalid(INV_MESSAGE);
                 }
                 else
                     switch (stoi(answ)) {

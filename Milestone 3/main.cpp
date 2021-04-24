@@ -8,9 +8,9 @@
 string clipboard; //Clipboard to be used in the program
 
 int main(){
-    VIEW view(string& clipboard);
+    VIEW view(clipboard);
     MODEL model((VIEW&)view);
-    CONTROLLER controller((MODEL&)model, (VIEW&)view, (string&) clipboard);
+    CONTROLLER controller((MODEL&)model, (VIEW&)view, clipboard);
 
     try{controller.StartSimulator();}
     catch (std::logic_error &err) {

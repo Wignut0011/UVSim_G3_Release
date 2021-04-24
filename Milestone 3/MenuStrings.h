@@ -8,14 +8,14 @@
 //#include "VIEW.h"
 
 using namespace std;
-enum :size_t {FILES = 15};
+enum :size_t {FILES = 16};
 
 class MenuStrings{
     //width 120, height 30.
     vector<string> pages;
     string pageNames[FILES] = {"MainMenu.txt","Readme1.txt","Readme2.txt","Readme3.txt","Readme4.txt","Readme5.txt",
-                               "EditMode.txt","ExecuteMode.txt","Save.txt","Load.txt","Copy.txt", "Cut.txt", "Paste.txt",
-                               "Insert.txt", "Delete.txt"};
+                               "Readme6.txt","EditMode.txt","ExecuteMode.txt","Save.txt","Load.txt","Copy.txt",
+                               "Cut.txt","Paste.txt","Insert.txt","Delete.txt"};
 public:
     MenuStrings(){
         setupMenus();
@@ -29,6 +29,7 @@ private:
         for (int i = 0; i < FILES; i++){
             string line;
             stringstream text;
+            string test = pageNames[i];
             file.open("Pages/" + string(pageNames[i]), ios::in);
             if (file){
                 while( getline(file,line)){
