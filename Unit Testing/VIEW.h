@@ -10,10 +10,6 @@
 #include <map>
 using namespace std;
 
-enum resolution :size_t     {WIDTH = 120, HEIGHT = 30, PRINT_LINE = 19}; //Resolution line consts
-
-enum errorTypes :size_t     {SIGN = 1, INV_OPCODE = 2, OVER_FLOW = 3, UNDER_FLOW = 4};//Error types thrown by CPU
-
 enum messageType :size_t    {INV_MESSAGE = 0, LOAD_SUCCESS = 1, LOAD_FAIL = 2, SAVE_SUCCESS = 3, SAVE_FAIL = 4,
     LOAD_REJECTION = 5, EXECUTION_REJECTION = 6, SIGN_ERROR = 7, INV_ERROR = 8,
     OVER_WARNING = 9, UNDER_WARNING = 10, WRITE_TEMPLATE = 11, READ_TEMPLATE = 12,
@@ -25,16 +21,9 @@ enum mainPages :size_t      {MAIN = 0, README_1 = 1, README_2 = 2, README_3 = 3,
 enum subPages :size_t       {ED_COPY = 11, ED_CUT = 12, ED_PASTE = 13, ED_INSERT = 14, ED_DELETE = 15, NEXT_SUB = 16,
     PREV_SUB = 17};
 
-enum formatting :size_t     {CURR_PAGE_NUM = 0, EXEC_PAGES = 1, MEM_PAGES = 2, LINE_SPACE = 3, CURR_MEM_PAGE = 4};
-
-enum tokenIndex :size_t     {LINE_TOKEN = 0, PAGE_TOKEN = 1, ADDR_TOKEN = 2, VAL_TOKEN = 3, STATUS_TOKEN = 4,
-    CLIP_TOKEN = 5};
-
 
 map<size_t, string> n_result;
-int n_accumulator;
-int n_IC;
-int n_operand;
+int n_accumulator, n_IC, n_operand;
 string n_IR;
 size_t n_opcode;
 
@@ -43,14 +32,15 @@ size_t n_opcode;
 struct VIEW{
     //Variables
     size_t currMenu;
+    size_t testingMode;
     string s_Display;
     string& clipboard;
 
-    VIEW(string& c): clipboard(c) {currMenu = 0; s_Display = "";}
+    VIEW(string& c): clipboard(c) {currMenu = 0; s_Display = ""; testingMode = 0;}
 
-    //Update menu number
-    void Display(const int& p){
-        currMenu = p;
+    //Resets data for next test
+    void Reset(){
+        currMenu = 0;
         s_Display = "";
 
         n_result.clear();
@@ -59,9 +49,20 @@ struct VIEW{
         n_operand = 0;
         n_IR = "";
         n_opcode = 0;
+    }
 
-        if (p == EDIT)
-            s_Display = "EMPTY";
+    //Update menu number
+    void Display(const int& p){
+        if (testingMode == 1 && p != MAIN){
+            currMenu = p;
+        }
+
+        else if (testingMode != 1){
+            currMenu = p;
+
+            if (p == EDIT)
+                s_Display = "EMPTY";
+        }
     }
 
     //Update what is on the screen
@@ -70,12 +71,14 @@ struct VIEW{
         s_Display = load.getMap()[0];
     }
     void ContinueEdit(MEMORY mem){
-        currMenu = EDIT;
-        s_Display = mem.getMap()[0];
+            currMenu = EDIT;
+            s_Display = mem.getMap()[0];
     }
     void MainError(size_t menu, bool status){
-        currMenu = MAIN;
-        s_Display = string(to_string(menu) + " " + ((status)?"true":"false"));
+        if (testingMode != 1){
+            currMenu = MAIN;
+            s_Display = string(to_string(menu) + " " + ((status) ? "true" : "false"));
+        }
     }
 
     //Update what is going on the screen and menu number
@@ -89,7 +92,7 @@ struct VIEW{
         s_Display = line;
     }
     void DisplayEnd(){
-        s_Display = "END";
+        if (testingMode != 4){ s_Display = "END"; }
     }
     void DisplayWrite(const int& addr, const int& value){
         s_Display = string(to_string(addr) + " " + to_string(value));

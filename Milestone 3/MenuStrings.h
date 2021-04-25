@@ -5,9 +5,11 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-//#include "VIEW.h"
 
 using namespace std;
+
+///Dane Manley (Including the .txt files)
+
 enum :size_t {FILES = 16};
 
 class MenuStrings{

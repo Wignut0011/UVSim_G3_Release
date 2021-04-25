@@ -8,12 +8,13 @@
 
 using namespace std;
 
+///Dane Manley
+
 class MemDump : public VIEW{
 public:
     static void createDump(CPU cpu) {
         int isDouble = 0;
-//        curMap = cpu.memory;
-//        prevMap = curMap;
+
         //An empty memory, for some strange reason, made it's way here
         if (cpu.memory.empty())
             throw logic_error("For some reason, dump received an empty CPU. How? How did this happen?");
@@ -71,6 +72,6 @@ public:
         cout.flush();
     }
 private:
-    MemDump()= default;;
+    MemDump()= default;
 };
 #endif

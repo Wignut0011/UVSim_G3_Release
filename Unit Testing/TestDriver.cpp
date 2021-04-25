@@ -14,15 +14,16 @@ using namespace std::chrono_literals;
 enum MenuOptions :size_t{README_MEN = 1, EDIT_MEN = 2, LOAD_MEN = 3, SAVE_MEN = 4, EXEC_MEN = 5, EXIT_MEN = 6};
 enum SubMenus :size_t{COPY_MEN = 1, CUT_MEN = 2, PASTE_MEN = 3, INSERT_MEN = 4, DELETE_MEN = 5};
 
+std::streambuf *CIN_OLD = std::cin.rdbuf();
+
 string clipboard;
 VIEW view(clipboard);
-//static stringstream input;
-const string buffFile = "Input_Buffer.txt";
-const string testFile = "Test_Input.txt";
+static stringstream input;
 std::ifstream test;
-std::ofstream in;
+//std::ofstream in;
 
 
+/// Unit Tests written by Daniel Espinel and Dane Manley
 /*
                             TESTING METHODOLOGY
   -------------------------------------------------------------------------
@@ -57,58 +58,45 @@ std::ofstream in;
 			-Correct message is displayed when staged memory is erased
 			-Correctly displays message when load is successful
 			-Load was successful
-        Check if edit mode sub-menus operate correctly
-            -Cut last line
-            -Insert to line before last
-            -Copy last line
-            -Delete last line
-            -Paste to last line
+       Check if edit mode sub-menus operate correctly
+            -Cut line
+            -Copy and Insert line
+            -Delete line
+            -Paste line
 
 	CPU
         -Execute a halt program and check if results are accurate
         -Execute an addition program and check if results are accurate
             9000+1000 = 0001_0000
-		 Check if execution is sending correct errors and warnings to VIEW
-		    -Overflow warning
+		 Check if execution is sending correct error to VIEW
 		    -Invalid opcode
 
  */
 
 void testing(){
-    std::streambuf *CIN_OLD;
-    CIN_OLD = std::cin.rdbuf();
-    std::cin.rdbuf(in.rdbuf());
+    view.Reset();
 
     MODEL model((VIEW&) view);
     CONTROLLER controller((MODEL&)model, (VIEW&)view, (string&) clipboard);
     controller.StartSimulator();
 
-    std::cin.rdbuf(CIN_OLD); //Return cin buffer to normal
+    input.str("");
+//    std::cin.rdbuf(CIN_OLD); //Return cin buffer to normal
 };
 
 void type(string str){
-    std::this_thread::sleep_for(200ms); //Sleep to not run into thread fighting
-    std::string input;
-    test >> input;
-    in << input;
-    std::this_thread::sleep_for(200ms); //Sleep to not run into thread fighting
+    input << str << std::endl;
 }
 
 int main(){
-    test.open(testFile);
-    in.open(buffFile);
-
     const string saveFile = "Save.mem";
 
 
-    //Change cout buffer for testing
-//    std::streambuf *COUT_OLD;
-//    COUT_OLD = std::cout.rdbuf();
-//    std::cout.rdbuf(in.rdbuf());
+    //Change cin buffer for testing
+    std::cin.rdbuf(input.rdbuf());
 
     //Init Simulator thread
-    std::thread sim (testing);
-//    testing();
+//    std::thread sim (testing);
 
     ///                    Testing Start
     ///                     CONTROLLER
@@ -116,49 +104,63 @@ int main(){
 
 
     ///Execute StartSimulator and test if at main menu
-    std::this_thread::sleep_for(1000ms); //Sleep to not run into thread fighting
+    type("6");
+    testing();
+//    std::this_thread::sleep_for(1000ms); //Sleep to not run into thread fighting
     test_(view.currMenu == MAIN);
 
     //Controller attempts to update view at appropriate times
+    view.testingMode = 1;
     //Go to readme
     type(to_string(README_MEN));
+    type("1");
+    type("6");
+    testing();
     test_(view.currMenu == README_1); ///Requests readme
-    type("1"); //Exit Readme
 
     //Go to edit
     type(to_string(EDIT_MEN));
-    test_(view.currMenu == EDIT); ///Requests Edit
     type("-99999");
+    type("6");
+    testing();
+    test_(view.currMenu == EDIT); ///Requests Edit
 
     //Check if Controller is sending errors to view in...
+    view.testingMode = 2;
     //Go to load
     type(to_string(LOAD_MEN));
-    test_(view.currMenu == MAIN
-            && view.s_Display == to_string(LOAD)+" false"); ///Load Deny
-    type("2");
+    type("6");
+    testing();
+    test_(view.currMenu == MAIN && view.s_Display == to_string(LOAD_MEN)+" false"); ///Load Deny
 
     //Go to save
     type(to_string(SAVE_MEN));
+    type("6");
+    testing();
     test_(view.currMenu == MAIN
-            && view.s_Display == to_string(SAVE)+" false"); ///Save Deny
+            && view.s_Display == to_string(SAVE_MEN)+" false"); ///Save Deny
 
     //Go to execute
     type(to_string(EXEC_MEN));
+    type("6");
+    testing();
     test_(view.currMenu == MAIN
-            && view.s_Display == to_string(EXEC)+" false"); ///Execute Deny
+            && view.s_Display == to_string(4)+" false"); ///Execute Deny
 
     //Check if Controller loads and saves correctly
-    //Go to edit and create one line +4300, exit with +9999, and test hasMemory() by going to save menu
+    //Go to edit and create one line +4300, exit with +99999, and test hasMemory() by going to save menu
+    view.testingMode = 1;
     type(to_string(EDIT_MEN));
     type("+4300");
     type("-99999");
     type(to_string(SAVE_MEN));
-
+    type("1");
+    type("6");
+    testing();
     test_(view.currMenu == SAVE); ///Save Allowed
 
     //Check displayed save contents
     test_(view.s_Display == "+4300"); ///Save Display
-    type("1");
 
     //Save file has correct information
     string saveTest;
@@ -172,62 +174,107 @@ int main(){
     save.close();
 
     //Change staged memory to check load
+    view.testingMode = 2;
     type(to_string(LOAD_MEN));
+    type("2");
+    type("6");
+    testing();
     test_(view.s_Display == "+4300"); ///Load display
+
+    type(to_string(LOAD_MEN));
+    type("1");
+    type(to_string(LOAD_MEN));
     type("3");
-    test_(view.s_Display == "EMTPY"); ///Correct message when erased memory
+    type(to_string(EDIT_MEN));
+    type("-99999");
+    type("6");
+    testing();
+    test_(view.s_Display == "EMPTY"); ///Correct message when erased memory
+
     type(to_string(EDIT_MEN));
     type("+0000");
     type("-99999");
     type(to_string(LOAD_MEN));
     type("1");
-    test_(view.s_Display == (to_string(LOAD) + " true")); ///Load message
+    type("6");
+    testing();
+    test_(view.s_Display == (to_string(1) + " true")); ///Load message
+
     type(to_string(EDIT_MEN));
+    type("+0000");
+    type("-99999");
+    type(to_string(LOAD_MEN));
+    type("1");
+    type(to_string(EDIT_MEN));
+    type("-99999");
+    type("6");
+    testing();
     test_(view.s_Display == "+4300"); ///Load was correct
 
     //Check if edit mode sub-menus operate correctly
+    type(to_string(EDIT_MEN));
     type("+0000");
     type("+0001");
 
     //Cut last line
     type(to_string(CUT_MEN));
-    type("02");
+    type("01");
+    type("-99999");
+    type("6");
+    testing();
     test_(view.clipboard == "+0001" && view.s_Display == "+0000"); /// Test Cut (Line is Only in Clipboard)
 
     //Insert to line before last
-    type(to_string(INSERT_MEN));
-    type("01");
-    test_(view.s_Display == "+0000"); ///Test Insert (Shifted Lines)
-
-    //Copy last line
+    type(to_string(EDIT_MEN));
+    type("+0000");
+    type("+0001");
     type(to_string(COPY_MEN));
-    type("02");
-    test_(view.clipboard == "+0000"); ///Test Copy
+    type("01");
+    type(to_string(INSERT_MEN));
+    type("00");
+    type("-99999");
+    type("6");
+    testing();
+    test_(view.s_Display == "+0001"); ///Test Copy and Insert (Shifted Lines)
 
     //Delete last line
+    type(to_string(EDIT_MEN));
+    type("+0000");
+    type("+0001");
     type(to_string(DELETE_MEN));
-    type("02");
+    type("00");
+    type("-99999");
+    type("6");
+    testing();
     test_(view.s_Display == "+0001"); ///Test Delete
 
     //Paste to last line
+    type(to_string(EDIT_MEN));
     type("+0000");
+    type("+0001");
+    type("+0000");
+    type(to_string(COPY_MEN));
+    type("01");
     type(to_string(PASTE_MEN));
-    type("02");
+    type("00");
+    type("-99999");
+    type("6");
+    testing();
     test_(view.s_Display == "+0001"); ///Test Paste (Overwrite Line)
 
-    type("-9999");
-    type(to_string(LOAD_MEN));
-    type("1");
 
     ///                         CPU
     ///------------------------------------------------------------
 
 
     //Execute, and test if result passed
+    type(to_string(LOAD_MEN));
+    type("1");
     type(to_string(EXEC_MEN));
-    std::this_thread::sleep_for(200ms);
     type("");
     type("");
+    type("6");
+    testing();
 
     test_((view.s_Display == "END"
             && n_accumulator == 0
@@ -236,16 +283,10 @@ int main(){
             && n_IC == 0
             && n_IR == "+4300")); ///Halt program executed correctly
 
-    std::this_thread::sleep_for(200ms);
-    type("");
-    type("");
+    /// Dane Manley Begin
 
-    //Go to load, erase staged memory, then go to edit
-    type(to_string(LOAD_MEN));
-    type("3");
+    //Create addition program and save
     type(to_string(EDIT_MEN));
-
-    //Input addition program and save
     type("+1007"); //0
     type("+1008"); //1
     type("+2007"); //2
@@ -259,56 +300,50 @@ int main(){
     type(to_string(EXEC_MEN));
     type("9000");
     type("1000");
-    std::this_thread::sleep_for(200ms);
     type("");
+    type("");
+    type("6");
+    testing();
 
     //CHECK WITH ANTHONY ON IMPLEMENTATION
     test_(n_result[7] == "+9000"
-            && n_result[8] == "++1000"
-            && n_result[9] == "++0001"
-            && n_result[10] == "+0000"); ///Addition Program executed correctly
+            && n_result[8] == "+1000"
+            && n_result[9][1] == '+'
+            && n_result[10][1] == '+'); ///Addition Program executed correctly
 
-    //Repeat creating an addition program but put in an warnings and end in an error
-    std::this_thread::sleep_for(200ms);
-    type("");
-    type(to_string(LOAD_MEN));
-    type("3");
+    //Repeat creating an addition program but end in an error
     type(to_string(EDIT_MEN));
-
     type("+1007"); //0
     type("+1008"); //1
     type("+2007"); //2
     type("+3308"); //3
     type("+2109"); //4
     type("+1109"); //5
-    type("+1000"); //6
+    type("+0000"); //6
     type("-99999");
 
     //Execute, check if errors and warnings were attempted to be displayed
+    view.testingMode = 4;
     type(to_string(EXEC_MEN));
-    type("1000");
-    type("1000");
-    test_(view.s_Display == "3 0 0"); ///Overflow
-    type("0");
-    test_(view.s_Display == "2 7 0"); ///Invalid opcode
-
-    //Exit simulator, testing done
-    std::this_thread::sleep_for(200ms);
+    type("1");
+    type("2");
     type("");
-
+    type("");
     type("6");
+    testing();
+    test_(view.s_Display == "2 6 0"); ///Invalid opcode
+
+    /// Dane Manley End
+
     results_();
-    sim.join();
 
 
     if (remove(saveFile.c_str()) != 0)
         cout << "SAVE FILE COULD NOT BE ERASED, ERASE Save.mem BEFORE NEXT TEST"
              << std::endl;
 
-//    std::cin.rdbuf(COUT_OLD); //Return cout buffer to normal
+    std::cin.rdbuf(CIN_OLD); //Return cin buffer to normal
     cin.get();
-    test.close();
-    in.close();
     return 0;
 }
 #endif

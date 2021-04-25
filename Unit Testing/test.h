@@ -4,8 +4,7 @@
 #include <iostream>
 using std::size_t;
 
-// test.h by Chuck Allison (CC License)
-// Modified by Daniel Espinel for educational purposes (2021)
+///Daniel Espinel
 
 namespace {
     size_t nPass{0};
@@ -27,15 +26,5 @@ namespace {
         std::cout << "\nRESULTS\n-------\n" << nPass << " passed\n" << nFail << " failed" << std::endl;
     }
 }
-#define fail_(text)         do_fail(text, __FILE__, __LINE__)
 #define test_(condition)    do_test(#condition, condition, __FILE__, __LINE__)
-#define nothrow_(test)                                              \
-    try{                                                            \
-        test;                                                       \
-        pass++;                                                     \
-    }catch(...){                                                    \
-        std::cout << "Failed throw ";                               \
-        do_fail(#test, __FILE__, __LINE__);                         \
-}
-
 #endif

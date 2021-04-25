@@ -409,7 +409,8 @@ public:
 
         string in;
         int page;
-        while(true){
+        bool isDone = false;
+        while(!isDone){
             while (in.empty()) { //Make sure user inputs a number
                 cin >> in;
                 if (in != "1" && in != "2" && in != "3" && in != "4" && in != "5" && in != "6") {
@@ -442,7 +443,7 @@ public:
                     executeMode();
                     break;
                 case 6:
-                    exit(EXIT_SUCCESS); //exit will be handled here. If in main, exit return is 1
+                    isDone = true; //exit will be handled here. If in main, exit return is 1
                     break;
                 default:
                     view.DisplayInvalid(INV_MESSAGE); //It just displays a message, no new page.
@@ -469,7 +470,7 @@ public:
                 } else input = stoi(in);
             }
             if (input == 1) { //Return to main menu
-                loadMenu();
+//                loadMenu();
                 navigated = true;
             }
 

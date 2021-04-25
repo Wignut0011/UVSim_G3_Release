@@ -3,6 +3,9 @@
 #include "MODEL.h"
 #include <fstream>
 
+///Anthony Peterson
+///Santiago Ramirez - Sub-Menus
+
 class CONTROLLER{
     const string saveFile = "Save.mem";
     string& clipboard;
@@ -14,16 +17,16 @@ public:
     CONTROLLER(MODEL &m, VIEW &v, string &c): model(m), view(v), clipboard(c){}
 
 
-    /// TODO: Make sure prompts on main menu/ read me files match up with expected input for page navigation
+    // TODO: Make sure prompts on main menu/ read me files match up with expected input for page navigation
 
-    /// Start of program
+    // Start of program
     void StartSimulator()
     {
         //Landing Page
         loadMenu();
     }
 
-    /// Gathers user input for Edit Mode
+    // Gathers user input for Edit Mode
     void readUserInput()
     {
         bool done = false;
@@ -50,12 +53,12 @@ public:
                 cin >> uInput;
 
                 if (uInput.length() == 6) {
-                    if (uInput == "-99999") /// user is done with program and not to save
+                    if (uInput == "-99999") // user is done with program and not to save
                     {
                         view.Display(MAIN);
                         done = true;
 //                        uInput = "+0000";
-                    } else if (uInput == "+99999") /// user would like to return to main menu and save their progress
+                    } else if (uInput == "+99999") // user would like to return to main menu and save their progress
                     {
 //                        return false;
                         if (!model.hasMemory())
@@ -75,6 +78,9 @@ public:
                         done = true;
                     }
                 }
+
+                ///Santiago Ramirez - Sub-Menus
+
                 else if(uInput.length() == 1 && isdigit(uInput[0]) &&
                     (stoi(uInput) >= ED_COPY-10 && stoi(uInput) <= ED_DELETE-10)) { //Sub-menu
 
@@ -297,7 +303,7 @@ public:
                             }
                             break;
                         }
-                        case 5: { ///Delete request
+                        case 5: { //Delete request
                             if (!model.hasMemory()) //Is there any memory yet
                                 view.DisplayInvalid(SUB_REJ_MESSAGE);
 
@@ -361,6 +367,8 @@ public:
 //                    else //Not empty, restart at next position
 //                        i -= 2;
                 }
+                ///Santiago Ramirez End
+
                 // Check user input for errors
                 else if ((uInput[0] != '+' && uInput[0] != '-') || uInput.length() != 5)
                 {
@@ -382,7 +390,7 @@ public:
 //        return done;
     }
 
-    /// Starts execution mode
+    // Starts execution mode
     void executeMode()
     {
         if (!model.hasMemory()) {//Can't execute with no memory dummy
@@ -402,7 +410,7 @@ public:
     }
 
 
-    /// Loads a specified menu page
+    // Loads a specified menu page
     void loadMenu()
     {
         model.updateMenu(MAIN);
@@ -452,7 +460,7 @@ public:
         }
     }
 
-    /// Navigates the Read Me files
+    // Navigates the Read Me files
     void navigateReadMe(int page)
     {
         bool navigated = false;
@@ -502,7 +510,7 @@ public:
         }
     }
 
-    /// Saves the current programs memory to .txt file
+    // Saves the current programs memory to .txt file
     void save()
     {
         view.DisplayLoadSave(false, model.GetMemory()); //Display Save Page
@@ -548,7 +556,7 @@ public:
         }
     }
 
-    /// Loads a specified .txt file into memory
+    // Loads a specified .txt file into memory
     void load()
     {
         //Check if there is a file to load
